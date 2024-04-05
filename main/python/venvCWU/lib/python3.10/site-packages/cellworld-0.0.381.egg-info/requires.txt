@@ -1,0 +1,7 @@
+cv
+json-cpp>=1.0.77
+matplotlib
+networkx
+numpy
+scipy
+tcp-messages
