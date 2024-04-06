@@ -13,6 +13,7 @@ _deps
 # build files 
 build/
 cmake-build-debug/
+cmake-build-release/
 git-dependencies/
 # ignore all .json files in the "logs/" directory
 logs/*.json
