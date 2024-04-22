@@ -19,3 +19,4 @@ git-dependencies/
 logs/*.json
 
 idea/
+.vs
