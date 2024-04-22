@@ -19,9 +19,6 @@ class Server:
     def start(self)->bool:
         if self.verify_logs_folder() is not True: 
             self.create_logs_folder()
-
-        # check again to make sure 
-        if self.verify_logs_folder() is not True: 
             self.log("Failed to create and find logs folder found.")
 
         if not self.tracking_service.run():
@@ -67,12 +64,11 @@ class ServerTrackingService(ct.TrackingService):
         # super().__init__(self)
         self.ip                  = "127.0.0.1"
         self.on_new_connection   = self.on_connection_ts
-        self.router.add_route("send_step",self.send_step_ts,ces.Step)
+        self.router.add_route("send_step", self.send_step_ts,ces.Step)
         self.current_trajectory = None
         self.__process_step__   = None
         
     def run(self)->bool:
-        # print('here')
         res = False
         try:
             res = self.start(port=4510)

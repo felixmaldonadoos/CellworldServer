@@ -5,6 +5,8 @@
 #include <json_cpp.h>
 #include <cell_world.h>
 
+// cannot be made static bc changes way we call the function
+
 namespace vr_server {
     struct Vr_service : tcp_messages::Message_service {
         Routes(
