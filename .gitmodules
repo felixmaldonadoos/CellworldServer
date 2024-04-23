@@ -1,0 +1,3 @@
+[submodule "main/python/modules/cellworld_experiment_service"]
+	path = main/python/modules/cellworld_experiment_service
+	url = git@github.com:felixmaldonadoos/cellworld_experiment_service.git
