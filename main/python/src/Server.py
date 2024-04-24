@@ -65,7 +65,8 @@ class ServerTrackingService(ct.TrackingService):
     def __init__(self) -> None:
         ct.TrackingService.__init__(self)
         # super().__init__(self)
-        self.ip                   = "172.26.176.129" # wsl ifconfig 
+        # self.ip                   = "172.26.176.129" # wsl lab  
+        self.ip                   = "172.30.127.68" # wsl home  
         # self.ip                  = "192.168.137.25" # windows ipconfig and settings 
         # self.ip                  = "127.0.0.1" # VR IP
         self.on_new_connection   = self.on_connection_ts
@@ -142,7 +143,8 @@ class ServerExperimentService(ces.ExperimentService):
         # self.on_step                = self.on_step_ts 
         # self.set_tracking_service_ip("127.0.0.1")
         # self.set_tracking_service_ip("192.168.137.25") # windows ipconfig
-        self.set_tracking_service_ip("172.26.176.129") # wsl
+        # self.set_tracking_service_ip("172.26.176.129") # wsl lab
+        self.set_tracking_service_ip("172.30.127.68") # wsl home
         self.current_trajectory = None
         self.get_trajectory = None # tell TS to send us trajectory for this episode 
         pass
