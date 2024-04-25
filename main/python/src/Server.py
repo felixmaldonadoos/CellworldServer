@@ -65,17 +65,12 @@ class ServerTrackingService(ct.TrackingService):
     def __init__(self) -> None:
         ct.TrackingService.__init__(self)
         # super().__init__(self)
-        self.ip                   = "172.26.176.129" # wsl lab  
-        # self.ip                   = "172.30.127.68" # wsl home  
-        # self.ip                  = "192.168.137.25" # windows ipconfig and settings 
-        # self.ip                  = "127.0.0.1" # localhost  
         self.on_new_connection   = self.on_connection_ts
         self.router.add_route("send_step",self.send_step_ts,ces.Step)
         self.current_trajectory = None
         self.__process_step__   = None
         
     def run(self)->bool:
-        # print('here')
         res = False
         try:
             res = self.start(port=4510)
@@ -140,9 +135,8 @@ class ServerExperimentService(ces.ExperimentService):
         self.router.add_route("get_cell_locations", self.get_cell_locations)
         self.router.add_route("get_occlusions", self.get_occlusions, str) 
         # self.on_step                = self.on_step_ts 
-        # self.set_tracking_service_ip("127.0.0.1")      # localhost
-        # self.set_tracking_service_ip("192.168.137.25") # windows ipconfig
-        self.set_tracking_service_ip("172.26.176.129") # wsl lab
+        self.set_tracking_service_ip("127.0.0.1")      # localhost
+        # self.set_tracking_service_ip("172.26.176.129") # wsl lab
         # self.set_tracking_service_ip("172.30.127.68")  # wsl home
         self.current_trajectory = None
         self.get_trajectory = None # tell TS to send us trajectory for this episode 
