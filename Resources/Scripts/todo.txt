@@ -1,0 +1,1 @@
+1. run wsl-port-forwarding.ps1 on startup (or running script) 
