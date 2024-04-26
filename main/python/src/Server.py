@@ -136,8 +136,6 @@ class ServerExperimentService(ces.ExperimentService):
         self.router.add_route("get_occlusions", self.get_occlusions, str) 
         # self.on_step                = self.on_step_ts 
         self.set_tracking_service_ip("127.0.0.1")      # localhost
-        # self.set_tracking_service_ip("172.26.176.129") # wsl lab
-        # self.set_tracking_service_ip("172.30.127.68")  # wsl home
         self.current_trajectory = None
         self.get_trajectory = None # tell TS to send us trajectory for this episode 
         pass
