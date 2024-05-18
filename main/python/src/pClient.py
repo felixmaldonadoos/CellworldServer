@@ -35,7 +35,7 @@ class ExperimentServiceClient(ces.ExperimentClient):
 
     def on_episode_started_es(self, msg:ces.EpisodeStartedMessage):
         print(f"[ES] Episode Started: {msg}")
-      
+    
     def pre_start(self)->None:
         input("Press Enter to start server...")
         res = self.connect("127.0.0.1")
