@@ -1,8 +1,0 @@
-{
-  "OutputFoldersPerTargetSystem": {
-    "WSL: Ubuntu": [
-      "main\\cpp\\out\\Ubuntu\\build\\linux-debug",
-      "main\\cpp\\out\\Ubuntu\\install\\linux-debug"
-    ]
-  }
-}
