@@ -8,9 +8,12 @@
 namespace vr_server {
     struct Vr_service : tcp_messages::Message_service {
         Routes(
-                Add_route_with_response("get_cell_locations", get_cell_locations);
-                Add_route_with_response("get_occlusions", get_occlusions, std::string);
+        // inherited routes: experiment_service.h
+//            Add_route_with_response("start_experiment", start_experiment, Start_experiment_request);
+            Add_route_with_response("get_cell_locations", get_cell_locations);
+            Add_route_with_response("get_occlusions", get_occlusions, std::string);
         )
+//        cell_world::
         cell_world::Location_list get_cell_locations();
         cell_world::Cell_group_builder get_occlusions(std::string &);
     };
