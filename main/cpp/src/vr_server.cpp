@@ -5,6 +5,7 @@ bool vr_server::Vr_server::prepare() {
     auto &experiment_tracking_client = tracking_server.create_local_client<experiment::Experiment_tracking_client>();
     experiment_tracking_client.subscribe();
     experiment_server.set_tracking_client(experiment_tracking_client);
+    std::cout << "Starting: experiment server at port: " << experiment::Experiment_service::get_port() << "\n";
     experiment_server.start(experiment::Experiment_service::get_port());
     return true;
 }
