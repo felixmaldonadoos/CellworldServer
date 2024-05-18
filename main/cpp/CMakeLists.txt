@@ -21,12 +21,11 @@ if (NOT ${Dependencies_FOUND})
     find_package (Dependencies REQUIRED)
 endif()
 
-
 ####
 #### END DEPENDENCIES
 ####
 
-install_git_dependency( Cellworld-Experiment-Service
+install_git_dependency(Cellworld-Experiment-Service
         https://github.com/cellworld/cellworld_experiment_service
         PRIVATE
         CMAKE_PROJECT
