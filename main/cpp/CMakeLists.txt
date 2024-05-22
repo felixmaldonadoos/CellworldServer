@@ -21,12 +21,11 @@ if (NOT ${Dependencies_FOUND})
     find_package (Dependencies REQUIRED)
 endif()
 
-
 ####
 #### END DEPENDENCIES
 ####
 
-install_git_dependency( Cellworld-Experiment-Service
+install_git_dependency(Cellworld-Experiment-Service
         https://github.com/cellworld/cellworld_experiment_service
         PRIVATE
         CMAKE_PROJECT
@@ -41,11 +40,9 @@ install_git_dependency( Cellworld-Tracking-Service
         IMPORT_TARGETS
         agent_tracking  )
 
-
 ####
 #### MAIN LIBRARY SETUP
 ####
-
 
 set (cellworld_vr_server_files
         src/vr_server.cpp)
@@ -53,7 +50,7 @@ set (cellworld_vr_server_files
 include_directories(include)
 
 add_library(vr_server
-${cellworld_vr_server_files})
+        ${cellworld_vr_server_files})
 
 target_link_libraries(vr_server
         LINK_PUBLIC
@@ -69,3 +66,4 @@ add_executable(server
 
 target_link_libraries(server
         vr_server)
+
