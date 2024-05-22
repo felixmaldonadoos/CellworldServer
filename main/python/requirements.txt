@@ -1,4 +1,5 @@
 cellworld==0.0.381
+cellworld-experiment-service==0.0.33
 certifi==2024.2.2
 charset-normalizer==3.3.2
 contourpy==1.2.0
