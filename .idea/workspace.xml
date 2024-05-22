@@ -3,14 +3,17 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
-  <component name="CMakePresetLoader"><![CDATA[{
-  "useNewFormat": true
-}]]></component>
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
   <component name="CMakeReloadState">
     <option name="reloaded" value="true" />
   </component>
   <component name="CMakeRunConfigurationManager">
-    <generated />
+    <generated>
+      <config projectName="cellworld_vr_server" targetName="vr_server" />
+      <config projectName="cellworld_vr_server" targetName="server" />
+    </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -19,33 +22,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="72433e9e-7620-4f4a-8f27-965319e814df" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/CellworldServer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CellworldServer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/CMake Overview" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/CMakeWorkspaceSettings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/CellworldServer/FileContentIndex/46bdd7a4-1598-4bec-8b62-cfad80ad9554.vsidx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/CellworldServer/FileContentIndex/4ad637ae-7cc7-44ca-ad1e-27e12c1664bc.vsidx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/CellworldServer/v17/.wsuo" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/ProjectSettings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/VSWorkspaceState.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/cmake.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/linux-debug/Ubuntu.scan.fgp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/main/cpp/VSWorkspaceState.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/slnx.sqlite" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1716_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1722_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1727_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1728_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1739_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1741_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1745_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1747_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1754_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1807_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240425_1809_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/logs/VR_20240426_0030_vr_dude_21_05_suffix_experiment.json" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/main/cpp/include/vr_client.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/main/cpp/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/include/vr_server.h" beforeDir="false" afterPath="$PROJECT_DIR$/main/cpp/include/vr_server.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/src/vr_server.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main/cpp/src/vr_server.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/python/src/Client.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/python/src/Client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/python/src/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/python/src/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,6 +38,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -66,10 +50,10 @@
     <option name="majorVersion" value="2023" />
     <option name="minorVersion" value="3.4" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2gbx1PLggZ7i096Dado3ykDksOE" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -77,6 +61,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "CMake Application.server.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
@@ -85,17 +70,39 @@
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "stable",
     "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "structure.view.defaults.are.configured": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\famal\Documents\Research\CellworldServer\main\cpp\include" />
+    </key>
+  </component>
+  <component name="RunManager" selected="CMake Application.server">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="server" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cellworld_vr_server" TARGET_NAME="server" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cellworld_vr_server" RUN_TARGET_NAME="server">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="vr_server" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cellworld_vr_server" TARGET_NAME="vr_server" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.server" />
+      <item itemvalue="CMake Application.vr_server" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -106,6 +113,7 @@
       <option name="presentableId" value="Default" />
       <updated>1715979863928</updated>
       <workItem from="1715979866442" duration="34000" />
+      <workItem from="1716000587443" duration="9624000" />
     </task>
     <servers />
   </component>
