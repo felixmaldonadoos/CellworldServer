@@ -23,7 +23,6 @@
   <component name="ChangeListManager">
     <list default="true" id="72433e9e-7620-4f4a-8f27-965319e814df" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/cpp/include/vr_server.h" beforeDir="false" afterPath="$PROJECT_DIR$/main/cpp/include/vr_server.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/cpp/src/vr_server.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main/cpp/src/vr_server.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/python/src/pClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/python/src/pClient.py" afterDir="false" />
     </list>
@@ -111,7 +110,7 @@
       <updated>1715979863928</updated>
       <workItem from="1715979866442" duration="34000" />
       <workItem from="1716000587443" duration="9624000" />
-      <workItem from="1716582334695" duration="4644000" />
+      <workItem from="1716582334695" duration="5844000" />
     </task>
     <servers />
   </component>
