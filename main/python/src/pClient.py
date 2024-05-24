@@ -7,30 +7,39 @@ from cellworld_tracking import TrackingClient as tc
 import time 
 
 class ExperimentServiceClient(ces.ExperimentClient):
+
     def __init__(self):
         super().__init__()
         self.router.add_route("predator_step",self.echo, JsonString)
         self.on_episode_started = self.on_episode_started_es
-        self.port = 4566
         self.response_start_experiment = None
-        
+
     def send_get_experiment(self, experiment_name: str) -> ces.GetExperimentResponse:
         return self.get_experiment(experiment_name)
 
     def on_episode_started_es(self, msg:ces.EpisodeStartedMessage):
         print(f"[ES] Episode Started: {msg}")
     
+    def init_connect(self, port)->bool:
+        return tcp.MessageClient.connect(self, "127.0.0.1", port)
+    
     def pre_start(self)->None:
+        
         input("Press Enter to connect to Experiment Service server...")
-        res = tcp.MessageClient.connect(self, "127.0.0.1", 4566)
-        print(f"[ES] connected")
+        
+        # if tcp.MessageClient.connect(self, "127.0.0.1", self.port):
+        if not self.init_connect(4566):
+            print("[ES] Connection failed")
+            return None
+        
+        print("[ES] Connected to Experiment Service server")
+        
         try:
             self.response_start_experiment = self.start_experiment(suffix="suffix",prefix="prefix",world_configuration="hexagonal", world_implementation="canonical",
                         occlusions="21_05", subject_name="alexander",duration=100,
-                        rewards_cells= None, rewards_orientations=JsonList())
-            # ces.Cell_group_builder()
+                        rewards_cells = ces.Cell_group_builder(), rewards_orientations=JsonList())
             print(f"[ES] Start experiment response: {self.response_start_experiment}")
-            
+
         except TimeoutError:
             print(f"[ES] Timed out! unrouted/pending requests: {self.router.pending_responses}; count: {self.router.routing_count};")
             return
@@ -54,8 +63,6 @@ class ExperimentServiceClient(ces.ExperimentClient):
         response = self.finish_experiment(self.response_start_experiment.experiment_name)
         print(f"[ES] finish_experiment: {response}")
         return None
-    
-        
         
     def echo(self,msg)->None:
         print(f"Sent: {msg}")
