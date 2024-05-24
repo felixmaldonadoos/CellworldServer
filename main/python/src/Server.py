@@ -19,9 +19,6 @@ class Server:
     def start(self)->bool:
         if self.verify_logs_folder() is not True: 
             self.create_logs_folder()
-
-        # check again to make sure 
-        if self.verify_logs_folder() is not True: 
             self.log("Failed to create and find logs folder found.")
 
         if not self.tracking_service.run():
@@ -65,14 +62,12 @@ class ServerTrackingService(ct.TrackingService):
     def __init__(self) -> None:
         ct.TrackingService.__init__(self)
         # super().__init__(self)
-        self.ip                  = "127.0.0.1"
         self.on_new_connection   = self.on_connection_ts
-        self.router.add_route("send_step",self.send_step_ts,ces.Step)
+        self.router.add_route("send_step", self.send_step_ts,ces.Step)
         self.current_trajectory = None
         self.__process_step__   = None
         
     def run(self)->bool:
-        # print('here')
         res = False
         try:
             res = self.start(port=4510)
@@ -85,7 +80,6 @@ class ServerTrackingService(ct.TrackingService):
         self.log("get trajectory")
         trajectory = self.current_trajectory
         self.current_trajectory = None
-        # self.log(trajectory)
         return trajectory
 
     def on_connection_ts(self,msg)->None:
@@ -98,7 +92,7 @@ class ServerTrackingService(ct.TrackingService):
         return None
     
     def process_step(self, step:ces.Step)->ces.Step: # not being called but i get a message back? 
-        # print(step)
+        print(step)
         if self.current_trajectory is None:
             self.current_trajectory = ces.Trajectories()
         if step is not None: self.current_trajectory.append(step)
@@ -135,19 +129,20 @@ class ServerExperimentService(ces.ExperimentService):
         self.on_episode_started     = self.on_episode_started_es
         self.on_episode_finished    = self.on_episode_finished_es
         self.on_experiment_resumed  = self.on_experiment_resumed_es  
-        self.router.add_route("get_cells_locations", self.get_cells_locations)
+        self.router.add_route("get_cell_locations", self.get_cell_locations)
         self.router.add_route("get_occlusions", self.get_occlusions, str) 
         # self.on_step                = self.on_step_ts 
-        self.set_tracking_service_ip("127.0.0.1")
+        self.set_tracking_service_ip("127.0.0.1")      # localhost
         self.current_trajectory = None
         self.get_trajectory = None # tell TS to send us trajectory for this episode 
         pass
 
-    def get_cells_locations(self, m=None) -> cw.Location_list:
+    def get_cell_locations(self, m=None) -> cw.Location_list:
+        self.log("Received: get_cell_locations")
         return cw.Location_list([c.location for c in self.world.cells])
     
     def get_occlusions(self, occlusions_name) -> cw.Cell_group_builder:
-        self.log("received get_occlusions:", occlusions_name)
+        self.log("Received: get_occlusions:", occlusions_name)
         return cw.Cell_group_builder.get_from_name("hexagonal", occlusions_name, "occlusions")
 
     def run(self)->bool:
@@ -169,12 +164,12 @@ class ServerExperimentService(ces.ExperimentService):
 
     def on_episode_started_es(self,msg:ces.StartEpisodeRequest = None)->None:
         self.log("episode started",msg)
-      
+    
     def on_episode_finished_es(self,msg:bool = None)->None:
         self.log("Episode finished.", msg)
         if self.get_trajectory is not None: 
             self.active_episode.trajectories = self.get_trajectory() 
-            self.log(self.active_episode)
+            # self.log(self.active_episode)
 
     def on_experiment_started_es(self,msg:ces.StartExperimentResponse = None)->None:
         self.log("Experiment started.",f"experiment name: {msg.experiment_name}")
