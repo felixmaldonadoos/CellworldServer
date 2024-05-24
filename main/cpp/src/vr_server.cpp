@@ -6,9 +6,6 @@ bool vr_server::Vr_server::prepare() {
     experiment_tracking_client.subscribe();
     experiment_server.set_tracking_client(experiment_tracking_client);
     experiment::Experiment_service::set_logs_folder("../logs/");
-//    experiment_server.start(experiment::Experiment_service::get_port());
-//    std::cout << "experiment_service port: "<< experiment::Experiment_service::get_port() << std::endl;
-
     return true;
 }
 
