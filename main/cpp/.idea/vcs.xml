@@ -2,7 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/../.." vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/git-dependencies/dependency_easy-tcp" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/git-dependencies/dependency_tcp-messages" vcs="Git" />
   </component>
 </project>
