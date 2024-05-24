@@ -25,19 +25,14 @@ class ExperimentServiceClient(ces.ExperimentClient):
         res = tcp.MessageClient.connect(self, "127.0.0.1", 4566)
         print(f"[ES] connected")
         try:
-            # r = self.send_request(tcp.Message("!subscribe"), 5000)
-            # print("[DBG-RQST] !subscribe: ", r.body)
-            # r = self.send_request(tcp.Message("!ping"), 5000)
-            # print("[DBG-RQST] !ping: ", r.body)
-            # r = self.send_request(tcp.Message("start_experiment", ), 5000)
-            # print("[DBG-RQST] start_experiment: ", r.body)
-            self.response_start_experiment = self.start_experiment(suffix="test",prefix="test",world_configuration="hexagonal",world_implementation="canonical",
+            self.response_start_experiment = self.start_experiment(suffix="suffix",prefix="prefix",world_configuration="hexagonal", world_implementation="canonical",
                         occlusions="21_05", subject_name="alexander",duration=100,
-                        rewards_cells= ces.Cell_group_builder(), rewards_orientations=JsonList())
+                        rewards_cells= None, rewards_orientations=JsonList())
+            # ces.Cell_group_builder()
             print(f"[ES] Start experiment response: {self.response_start_experiment}")
+            
         except TimeoutError:
-            print("[ES] Timed out")
-            print(f"[ES] unrouted: pending {self.router.pending_responses}; count: {self.router.routing_count};")
+            print(f"[ES] Timed out! unrouted/pending requests: {self.router.pending_responses}; count: {self.router.routing_count};")
             return
         try:
             self.response_start_episode = self.start_episode(experiment_name=self.response_start_experiment.experiment_name,
@@ -49,25 +44,22 @@ class ExperimentServiceClient(ces.ExperimentClient):
     
     def run(self)->None:
         self.pre_start()
-
+            
     def stop(self)->None:
-        if self.response_start_experiment:
-            get_experiment_response = self.get_experiment(self.response_start_experiment.experiment_name)
-            if get_experiment_response:
-                print(f"[ES] get_experiment_response: {get_experiment_response}")
-                time.sleep(1)
-                print(self.finish_experiment(self.response_start_experiment.experiment_name))
-            else:
-                print("[ES] get_experiment_response NONE")
-        else: 
-            print("[ES] response_start_experiment NONE")
+        if self.response_start_experiment is None:
+            print("[ES] @ stop:  response_start_experiment NONE")
+            return
+        r = self.finish_episode()
+        print(f"[ES] finish_episode: {r}")
+        response = self.finish_experiment(self.response_start_experiment.experiment_name)
+        print(f"[ES] finish_experiment: {response}")
+        return None
+    
+        
+        
     def echo(self,msg)->None:
         print(f"Sent: {msg}")
     
-# run tracking service
-# TrackingServiceClient().run()
-
-# run experiment service 
 esc = ExperimentServiceClient()
 esc.run()
 
