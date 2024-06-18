@@ -37,10 +37,12 @@ class ExperimentServiceClient(ces.ExperimentClient):
     def pre_start(self)->None:
         res = self.connect("127.0.0.1")
         print(f"[ES] connected")
+        
         try:
             self.response_start_experiment = self.start_experiment(suffix="test",prefix="test",world_configuration="hexagonal",world_implementation="canonical",
                         occlusions="21_05", subject_name="alexander",duration=100,
                         rewards_cells=None,rewards_orientations=None)
+
             print(f"[ES] Start experiment response: {self.response_start_experiment}")
         except TimeoutError:
             print("[ES] Timed out")

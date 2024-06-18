@@ -35,24 +35,24 @@ cell_world::Location_list vr_server::Vr_service::get_cell_locations() {
         cell_locations.push_back(cell.location);
     }
 
-    std::cout << cell_locations.to_json() << std::endl;
     return cell_locations;
 }
 
 cell_world::Cell_group_builder vr_server::Vr_service::get_occlusions(std::string &occlusion_name) {
-    std::cout << cell_world::Resources::from("cell_group").key("hexagonal").key(occlusion_name).key("occlusions").get_resource<cell_world::Cell_group_builder>().to_json() << "\n";
+//    std::cout << cell_world::Resources::from("cell_group").key("hexagonal").key(occlusion_name).key("occlusions").get_resource<cell_world::Cell_group_builder>().to_json() << "\n";
     return cell_world::Resources::from("cell_group").key("hexagonal").key(occlusion_name).key("occlusions").get_resource<cell_world::Cell_group_builder>();
 }
 
 // relay routes you want to use
 experiment::Start_experiment_response vr_server::Vr_service::start_experiment(experiment::Start_experiment_request & request) {
     experiment::Start_experiment_response response = ((Vr_server *) this->_server)->experiment_server.start_experiment(request);
+    std::cout << "START EXPERIMENT RESPONSE: " << response << std::endl;
     return response;
 }
 
 bool vr_server::Vr_service::finish_experiment(const experiment::Finish_experiment_request &request) {
     std::cout << "FINISH EXPERIMENT RECEIVED\n";
-    auto response = ((Vr_server *) this->_server)->experiment_server.finish_experiment(request);
+    bool response = ((Vr_server *) this->_server)->experiment_server.finish_experiment(request);
     std::cout << "FINISH EXPERIMENT RESPONSE:" << response << std::endl;
 
     return response;
@@ -78,4 +78,8 @@ bool vr_server::Vr_service::finish_episode() {
 experiment::Get_experiment_response vr_server::Vr_service::get_experiment(const experiment::Get_experiment_request & request) {
     std::cout << "GET EXPERIMENT NOT SET UP YET! SENDING DEFAULT RESPONSE!\n";
     return experiment::Get_experiment_response();
+}
+
+void vr_server::Vr_service::on_prey_step(cell_world::Step & step) {
+    std::cout << "RECEIVED STEP: " << step.location << std::endl;
 }
