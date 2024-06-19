@@ -19,6 +19,7 @@ class ExperimentServiceClient(ces.ExperimentClient):
         print(f"[ES] Episode Started: {msg}")
     
     def init_connect(self, port)->bool:
+        # return tcp.MessageClient.connect(self, "172.26.176.129", 4970) # 172.26.176.129; was port=4566
         return tcp.MessageClient.connect(self, "172.26.176.129", 4970) # 172.26.176.129; was port=4566
     
     def pre_start(self)->None:
@@ -36,22 +37,17 @@ class ExperimentServiceClient(ces.ExperimentClient):
                         occlusions="21_05", subject_name="alexander",duration=100,
                         rewards_cells = ces.Cell_group_builder(), rewards_orientations=JsonList())
             print(f"[ES] Start experiment response: {self.response_start_experiment}")
+
         except TimeoutError:
             print(f"[ES] Timed out! unrouted/pending requests: {self.router.pending_responses}; count: {self.router.routing_count};")
-            return None
+            return
         try:
             self.response_start_episode = self.start_episode(experiment_name=self.response_start_experiment.experiment_name,
                                         rewards_sequence=None)
             print(f"[ES] Start episode response: {self.response_start_episode}")
         except TimeoutError:
             print("[ES] Start episode timed out")
-            return None
-
-    def send_broadcast_prey(self, step):
-        print(f"Sending prey_step {step.location}")
-        
-        self.broadcast_subscribed(message=tcp.Message(header="prey_step", 
-                             body=step))
+            return
     
     def run(self)->None:
         self.pre_start()
@@ -69,19 +65,12 @@ class ExperimentServiceClient(ces.ExperimentClient):
     def echo(self,msg)->None:
         print(f"Sent: {msg}")
     
-client = ExperimentServiceClient()
-client.run()
+esc = ExperimentServiceClient()
+esc.run()
 
 # finish episode and then finish experiment 
 print("[LOG] Preparing to stop...")
 time.sleep(0.5)
-
-try:
-    for i in range(0,10):
-        client.send_broadcast_prey(ces.Step(0.5,1.0))
-except: 
-    print("ERROR SENDING MESSAGE")
-
-client.stop()
+esc.stop()
 
 print("[LOG] Exiting...")

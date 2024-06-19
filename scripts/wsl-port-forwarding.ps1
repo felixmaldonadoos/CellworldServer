@@ -16,8 +16,6 @@ else {
 }
 
 
-
-
 Invoke-Expression "netsh interface portproxy reset";
 
 $portl = $args
@@ -29,6 +27,8 @@ $portl+= "4530"
 $portl+= "4540"
 $portl+= "4550"
 $portl+= "4560"
+$portl+= "4566"
+$portl+= "4970"
 $portl+= "4570"
 $portl+= "4580"
 $portl+= "4590"
