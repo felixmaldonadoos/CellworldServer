@@ -17,9 +17,11 @@ namespace vr_server {
             Add_route_with_response("get_experiment", get_experiment, experiment::Get_experiment_request);
             Add_route_with_response("get_cell_locations", get_cell_locations);
             Add_route_with_response("get_occlusions", get_occlusions, std::string);
-        )
+            Add_route("prey_step", on_prey_step, cell_world::Step);
+            )
         experiment::Start_experiment_response start_experiment(experiment::Start_experiment_request &);
         experiment::Resume_experiment_response resume_experiment(experiment::Resume_experiment_request &);
+        void on_prey_step(cell_world::Step &);
         bool start_episode(const experiment::Start_episode_request &);
         bool finish_episode();
         bool finish_experiment(const experiment::Finish_experiment_request &);

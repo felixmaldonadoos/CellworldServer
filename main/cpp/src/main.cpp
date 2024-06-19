@@ -2,7 +2,8 @@
 
 using namespace vr_server;
 
-constexpr int PORT = 4566;
+//constexpr int PORT = 4566;
+constexpr int PORT = 4970;
 
 int main(int argc, char **argv){
     Vr_server my_server;
