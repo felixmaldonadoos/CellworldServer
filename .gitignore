@@ -10,11 +10,11 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
-.idea/
+**/.idea/
 # build files 
-build/
-*/logs/*
+**/build/
+**/logs/*
 
 # ignore all .json files in the "/logs/" directory
-logs/*.log
-logs/*.json
+**/logs/*.log
+**/logs/*.json
