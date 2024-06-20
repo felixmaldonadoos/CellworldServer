@@ -43,15 +43,13 @@ cell_world::Cell_group_builder vr_server::Vr_service::get_occlusions(std::string
 // relay routes you want to use
 experiment::Start_experiment_response vr_server::Vr_service::start_experiment(experiment::Start_experiment_request & request) {
     experiment::Start_experiment_response response = ((Vr_server *) this->_server)->experiment_server.start_experiment(request);
-    std::cout << "START EXPERIMENT RESPONSE: " << response << std::endl;
+    std::cout << "START EXPERIMENT RESPONSE: " << response.experiment_name << std::endl;
     return response;
 }
 
 bool vr_server::Vr_service::finish_experiment(const experiment::Finish_experiment_request &request) {
-    std::cout << "FINISH EXPERIMENT RECEIVED\n";
     bool response = ((Vr_server *) this->_server)->experiment_server.finish_experiment(request);
-    std::cout << "FINISH EXPERIMENT RESPONSE:" << response << std::endl;
-
+    std::cout << "FINISH EXPERIMENT RESPONSE: " << response << std::endl;
     return response;
 }
 
@@ -68,7 +66,7 @@ bool vr_server::Vr_service::start_episode(const experiment::Start_episode_reques
 
 bool vr_server::Vr_service::finish_episode() {
     bool response = ((Vr_server *) this->_server)->experiment_server.finish_episode();
-    std::cout << "FINISH EPISODE RESPONSE:" << response << std::endl;
+    std::cout << "FINISH EPISODE RESPONSE: " << response << std::endl;
     return response;
 }
 

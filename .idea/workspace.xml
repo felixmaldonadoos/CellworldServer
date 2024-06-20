@@ -23,8 +23,39 @@
   <component name="ChangeListManager">
     <list default="true" id="72433e9e-7620-4f4a-8f27-965319e814df" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240524_2241_alexander_21_05_suffix/episode_000/prefix_20240524_2241_alexander_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240524_2241_alexander_21_05_suffix/prefix_20240524_2241_alexander_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2245_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2245_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2245_ExperimentNameIn_21_05_suffix/prefix_20240618_2245_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2249_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2249_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2249_ExperimentNameIn_21_05_suffix/prefix_20240618_2249_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2257_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2257_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2257_ExperimentNameIn_21_05_suffix/prefix_20240618_2257_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2303_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2303_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2303_ExperimentNameIn_21_05_suffix/prefix_20240618_2303_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2305_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2305_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2305_ExperimentNameIn_21_05_suffix/prefix_20240618_2305_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2310_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2310_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2310_ExperimentNameIn_21_05_suffix/prefix_20240618_2310_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2311_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2311_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2311_ExperimentNameIn_21_05_suffix/prefix_20240618_2311_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2313_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2313_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2313_ExperimentNameIn_21_05_suffix/prefix_20240618_2313_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2318_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2318_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2318_ExperimentNameIn_21_05_suffix/prefix_20240618_2318_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2322_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2322_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2322_ExperimentNameIn_21_05_suffix/prefix_20240618_2322_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2325_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2325_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2325_ExperimentNameIn_21_05_suffix/prefix_20240618_2325_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2327_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2327_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2327_ExperimentNameIn_21_05_suffix/prefix_20240618_2327_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2332_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2332_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2332_ExperimentNameIn_21_05_suffix/prefix_20240618_2332_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2334_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2334_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2334_ExperimentNameIn_21_05_suffix/prefix_20240618_2334_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2338_ExperimentNameIn_21_05_suffix/episode_000/prefix_20240618_2338_ExperimentNameIn_21_05_suffix_episode_000.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/cpp/logs/prefix/prefix_20240618_2338_ExperimentNameIn_21_05_suffix/prefix_20240618_2338_ExperimentNameIn_21_05_suffix_experiment.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main/cpp/src/vr_server.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main/cpp/src/vr_server.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/src/pClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/python/src/pClient.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +101,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;CMakeSettings&quot;,
     &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -80,11 +112,6 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.server">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="server" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cellworld_vr_server" TARGET_NAME="server" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cellworld_vr_server" RUN_TARGET_NAME="server">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -111,6 +138,8 @@
       <workItem from="1715979866442" duration="34000" />
       <workItem from="1716000587443" duration="9624000" />
       <workItem from="1716582334695" duration="5844000" />
+      <workItem from="1718767985295" duration="11296000" />
+      <workItem from="1718858566136" duration="711000" />
     </task>
     <servers />
   </component>
