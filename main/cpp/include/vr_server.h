@@ -18,13 +18,18 @@ namespace vr_server {
             Add_route_with_response("get_cell_locations", get_cell_locations);
             Add_route_with_response("get_occlusions", get_occlusions, std::string);
             Add_route("prey_step", on_prey_step, cell_world::Step);
+            Add_route("episode_started", on_episode_started, std::string);
             )
-        experiment::Start_experiment_response start_experiment(experiment::Start_experiment_request &);
+            
+        experiment::Start_experiment_response start_experiment(experiment::Start_experiment_request &); //todo: check if can make const
         experiment::Resume_experiment_response resume_experiment(experiment::Resume_experiment_request &);
         void on_prey_step(cell_world::Step &);
         bool start_episode(const experiment::Start_episode_request &);
         bool finish_episode();
         bool finish_experiment(const experiment::Finish_experiment_request &);
+        void on_connect() override;
+        void on_episode_started(const std::string &);
+
         experiment::Get_experiment_response get_experiment(const experiment::Get_experiment_request &);
         cell_world::Location_list get_cell_locations();
         cell_world::Cell_group_builder get_occlusions(std::string &);
@@ -38,4 +43,6 @@ namespace vr_server {
         agent_tracking::Tracking_server tracking_server;
         experiment::Experiment_server experiment_server;
     };
+
 }
+
