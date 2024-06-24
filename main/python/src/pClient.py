@@ -19,7 +19,8 @@ class ExperimentServiceClient(ces.ExperimentClient):
         print(f"[ES] Episode Started: {msg}")
     
     def init_connect(self, port)->bool:
-        return tcp.MessageClient.connect(self, "172.26.176.129", 4970) # 172.26.176.129; was port=4566
+        # return tcp.MessageClient.connect(self, "172.26.176.129", 4970) # safe
+        return tcp.MessageClient.connect(self, "172.30.127.68", 4970) # alt 
     
     def pre_start(self)->None:
         
@@ -49,9 +50,8 @@ class ExperimentServiceClient(ces.ExperimentClient):
 
     def send_broadcast_prey(self, step):
         print(f"Sending prey_step {step.location}")
-        
-        self.broadcast_subscribed(message=tcp.Message(header="prey_step", 
-                             body=step))
+        self.send_message(message=tcp.Message(header="prey_step", 
+                                body=step))
     
     def run(self)->None:
         self.pre_start()

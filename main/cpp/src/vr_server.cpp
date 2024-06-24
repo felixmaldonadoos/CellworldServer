@@ -1,5 +1,8 @@
 #include "vr_server.h"
 
+//todo: function to get number of active connections
+
+
 bool vr_server::Vr_server::prepare() {
     tracking_server.start(agent_tracking::Tracking_service::get_port());
     auto &experiment_tracking_client = tracking_server.create_local_client<experiment::Experiment_tracking_client>();
@@ -34,6 +37,7 @@ cell_world::Location_list vr_server::Vr_service::get_cell_locations() {
 
     return cell_locations;
 }
+
 
 cell_world::Cell_group_builder vr_server::Vr_service::get_occlusions(std::string &occlusion_name) {
 //    std::cout << cell_world::Resources::from("cell_group").key("hexagonal").key(occlusion_name).key("occlusions").get_resource<cell_world::Cell_group_builder>().to_json() << "\n";
@@ -72,9 +76,29 @@ bool vr_server::Vr_service::finish_episode() {
 
 experiment::Get_experiment_response vr_server::Vr_service::get_experiment(const experiment::Get_experiment_request & request) {
     std::cout << "GET EXPERIMENT NOT SET UP YET! SENDING DEFAULT RESPONSE!\n";
-    return experiment::Get_experiment_response();
+    return experiment::Experiment_service::get_experiment(request);
 }
 
 void vr_server::Vr_service::on_prey_step(cell_world::Step & step) {
     std::cout << "RECEIVED STEP: " << step.location << std::endl;
+//    ((Vr_server *) this->_server)->tracking_server.send_step(step);
+    tcp_messages::Message message;
+    message.header = "predator_step";
+    message.body = step.to_json();
+//    ((Vr_server *) this->_server)->tracking_server.broadcast(message);
+    this->send_message(message);
+//    ((Vr_server *) this->_server)->tracking_server.broadcast_subscribed(message);
 }
+
+// todo: struct that manages experiment queue
+
+void vr_server::Vr_service::on_connect() {
+    std::cout << "ON CONNECT!\n";
+    Service::on_connect();
+}
+
+void vr_server::Vr_service::on_episode_started(const std::string & episode_started_message) {
+    std::cout << "ON EPISODE STARTED:" << episode_started_message << std::endl;
+}
+
+
