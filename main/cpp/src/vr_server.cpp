@@ -81,13 +81,12 @@ experiment::Get_experiment_response vr_server::Vr_service::get_experiment(const 
 
 void vr_server::Vr_service::on_prey_step(cell_world::Step & step) {
 //    std::cout << "RECEIVED STEP: " << step.location << std::endl;
-//    ((Vr_server *) this->_server)->tracking_server.send_step(step);
     tcp_messages::Message message;
     message.header = "predator_step";
+    // todo: implement PC
+
     message.body = step.to_json();
-//    ((Vr_server *) this->_server)->tracking_server.broadcast(message);
     this->send_message(message);
-//    ((Vr_server *) this->_server)->tracking_server.broadcast_subscribed(message);
 }
 
 // todo: struct that manages experiment queue
