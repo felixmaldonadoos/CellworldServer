@@ -20,7 +20,8 @@ class ExperimentServiceClient(ces.ExperimentClient):
     
     def init_connect(self, port)->bool:
         # return tcp.MessageClient.connect(self, "172.26.176.129", 4970) # safe
-        return tcp.MessageClient.connect(self, "172.30.127.68", 4970) # alt 
+        # return tcp.MessageClient.connect(self, "172.30.127.68", 4970) # alt 
+        return tcp.MessageClient.connect(self, "172.31.8.194", 4970) # alt 
     
     def pre_start(self)->None:
         
