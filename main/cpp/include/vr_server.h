@@ -7,6 +7,17 @@
 
 // cannot be made static bc changes way we call the function
 namespace vr_server {
+
+    struct Vr_tracking_client : experiment::Experiment_tracking_client {
+        Routes(
+                Add_route("(.*)(step)", on_step, cell_world::Step);
+//                Add_route("pre", on_step, cell_world::Step);
+
+        )
+        void on_step(const cell_world::Step &) override;
+        experiment::Experiment_server *experiment_server;
+    };
+
     struct Vr_service : tcp_messages::Message_service {
         Routes(
             Add_route_with_response("start_experiment", start_experiment, experiment::Start_experiment_request);
@@ -29,6 +40,7 @@ namespace vr_server {
         bool finish_experiment(const experiment::Finish_experiment_request &);
         void on_connect() override;
         void on_episode_started(const std::string &);
+        void process_on_step(const cell_world::Step &);
 
         experiment::Get_experiment_response get_experiment(const experiment::Get_experiment_request &);
         cell_world::Location_list get_cell_locations();

@@ -8,7 +8,7 @@ class ExperimentServiceClient(ces.ExperimentClient):
 
     def __init__(self):
         super().__init__()
-        self.router.add_route("predator_step", self.echo, JsonString)
+        self.router.add_route("predator_step", self.echo_predator_response, JsonString)
         self.on_episode_started = self.on_episode_started_es
         self.response_start_experiment = None
 
@@ -21,7 +21,8 @@ class ExperimentServiceClient(ces.ExperimentClient):
     def init_connect(self, port)->bool:
         # return tcp.MessageClient.connect(self, "172.26.176.129", 4970) # safe
         # return tcp.MessageClient.connect(self, "172.30.127.68", 4970) # alt 
-        return tcp.MessageClient.connect(self, "172.31.8.194", 4970) # alt 
+        # return tcp.MessageClient.connect(self, "172.31.8.194", 4970) # alt 
+        return tcp.MessageClient.connect(self, "127.0.0.1", 4970) # alt 
     
     def pre_start(self)->None:
         
@@ -66,6 +67,9 @@ class ExperimentServiceClient(ces.ExperimentClient):
         response = self.finish_experiment(self.response_start_experiment.experiment_name)
         print(f"[ES] finish_experiment: {response}")
         return None
+    
+    def echo_predator_response(self,msg)->None:
+        print(f"[echo_predator_response]: {msg}")
         
     def echo(self,msg)->None:
         print(f"Sent: {msg}")
@@ -79,7 +83,10 @@ time.sleep(0.5)
 
 try:
     for i in range(0,10):
-        client.send_broadcast_prey(ces.Step(0.5,1.0))
+        step = ces.Step(0.5,1.0)
+        step.agent_name = "prey"
+        step.frame = i 
+        client.send_broadcast_prey(step)
 except: 
     print("ERROR SENDING MESSAGE")
 
