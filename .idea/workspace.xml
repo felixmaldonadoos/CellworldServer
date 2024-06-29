@@ -22,10 +22,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="72433e9e-7620-4f4a-8f27-965319e814df" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/cpp/include/vr_server.h" beforeDir="false" afterPath="$PROJECT_DIR$/main/cpp/include/vr_server.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/cpp/src/vr_server.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main/cpp/src/vr_server.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/python/src/pClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/python/src/pClient.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,12 +65,13 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "dev",
+    "last_opened_file_path": "C:/Users/famal/Documents/Research/CellworldServer/main/cpp/robot_controller",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "CMakeSettings",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "structure.view.defaults.are.configured": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -112,7 +112,8 @@
       <workItem from="1718858566136" duration="711000" />
       <workItem from="1718949942465" duration="7976000" />
       <workItem from="1718999470078" duration="12502000" />
-      <workItem from="1719372059730" duration="5795000" />
+      <workItem from="1719372059730" duration="5928000" />
+      <workItem from="1719619218695" duration="1220000" />
     </task>
     <servers />
   </component>

@@ -89,10 +89,10 @@ void vr_server::Vr_service::on_prey_step(cell_world::Step & step) {
     this->process_on_step(step);
     tcp_messages::Message message;
 
-//    message.header = "predator_step";
-//    // todo: implement PC
-//    message.body = step.to_json();
-//    this->send_message(message);
+    message.header = "predator_step";
+    // todo: implement PC
+    message.body = step.to_json();
+    this->send_message(message);
 }
 
 // todo: struct that manages experiment queue
