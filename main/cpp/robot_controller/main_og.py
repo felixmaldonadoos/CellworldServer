@@ -52,5 +52,5 @@ while running:
     predator_step = cw.Step(agent_name="predator")
     predator_step.location = cw.Location(*model.predator.state.location)
     # predator_step.rotation = model.predator.state.direction
-    server.broadcast_subscribed(message=tcp.Message("predato_step", body=predator_step))
+    server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
 

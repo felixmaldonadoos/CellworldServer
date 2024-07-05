@@ -55,6 +55,7 @@ experiment::Start_experiment_response vr_server::Vr_service::start_experiment(ex
 bool vr_server::Vr_service::finish_experiment(const experiment::Finish_experiment_request &request) {
     bool response = ((Vr_server *) this->_server)->experiment_server.finish_experiment(request);
     std::cout << "FINISH EXPERIMENT RESPONSE: " << response << std::endl;
+    std::cout << "FINISH EXPERIMENT REQUEST (IN): " << request << std::endl;
     return response;
 }
 
