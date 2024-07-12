@@ -1,0 +1,274 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "server"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"target_link_libraries",
+			"include_directories",
+			"install_git_dependency"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt",
+			"cmake-build-debug/DependenciesConfig.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 66,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 69,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 52,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 30,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 437,
+				"parent" : 4
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g"
+				},
+				{
+					"fragment" : "-std=gnu++20"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 3,
+					"path" : "/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/include"
+				},
+				{
+					"backtrace" : 5,
+					"isSystem" : true,
+					"path" : "/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/git-dependencies/cellworld_experiment_service/include"
+				},
+				{
+					"backtrace" : 5,
+					"isSystem" : true,
+					"path" : "/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/git-dependencies/dependency_json-cpp/include"
+				},
+				{
+					"backtrace" : 5,
+					"isSystem" : true,
+					"path" : "/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/git-dependencies/dependency_date/include"
+				},
+				{
+					"backtrace" : 5,
+					"isSystem" : true,
+					"path" : "/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/git-dependencies/cellworld/include"
+				},
+				{
+					"backtrace" : 5,
+					"isSystem" : true,
+					"path" : "/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/git-dependencies/dependency_easy-tcp/include"
+				},
+				{
+					"backtrace" : 5,
+					"isSystem" : true,
+					"path" : "/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/git-dependencies/dependency_tcp-messages/include"
+				},
+				{
+					"backtrace" : 5,
+					"isSystem" : true,
+					"path" : "/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/git-dependencies/cellworld_agent_tracking/include"
+				},
+				{
+					"backtrace" : 5,
+					"isSystem" : true,
+					"path" : "/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/git-dependencies/dependency_perf-analysis/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/git-dependencies/dependency_requests/include"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "vr_server::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "server::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-g",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-L/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/cellworld_experiment_service/build",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-L/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/dependency_perf-analysis/build",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-L/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/cellworld_agent_tracking/build",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-L/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/cellworld/build",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-L/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/dependency_json-cpp/build",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-L/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/dependency_requests/build",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-L/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/dependency_tcp-messages/build",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-L/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/dependency_easy-tcp/build",
+				"role" : "libraryPath"
+			},
+			{
+				"fragment" : "-Wl,-rpath,/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/cellworld_experiment_service/build:/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/dependency_perf-analysis/build:/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/cellworld_agent_tracking/build:/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/cellworld/build:/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/dependency_json-cpp/build:/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/dependency_requests/build:/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/dependency_tcp-messages/build:/mnt/c/Users/famal/Documents/Research/CellworldServer/main/cpp/cmake-build-debug/git-dependencies/dependency_easy-tcp/build",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "libvr_server.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "git-dependencies/cellworld_experiment_service/build/libexperiment_service.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "git-dependencies/dependency_perf-analysis/build/libperf-analysis.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "git-dependencies/cellworld_agent_tracking/build/libagent_tracking.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "git-dependencies/cellworld/build/libcellworld.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "git-dependencies/dependency_requests/build/librequests.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libcurl.so",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "git-dependencies/dependency_tcp-messages/build/libtcp_messages.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "git-dependencies/dependency_json-cpp/build/libjson-cpp.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "git-dependencies/dependency_easy-tcp/build/libeasy-tcp.a",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "server",
+	"nameOnDisk" : "server",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/main.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "EXECUTABLE"
+}
