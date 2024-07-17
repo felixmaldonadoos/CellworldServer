@@ -15,7 +15,7 @@ sample_count_predator = 0
 PORT = 4790 
 RENDER = True
 FS = 90
-IP = "172.26.176.129"
+IP = "172.23.126.101"
 
 parser = argparse.ArgumentParser(description='BotEvadeVR: Agent Tracking Server.')
 parser.add_argument('--ip', type=str, default=IP, help=f'Server host (default: {IP})')
