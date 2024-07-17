@@ -24,3 +24,4 @@ _deps
 **/logs/*.log
 **/logs/*.json
 
+/.idea/
