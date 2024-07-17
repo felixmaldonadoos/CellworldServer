@@ -1,60 +1,3 @@
-<<<<<<< HEAD
-import cellworld as cw
-import cellworld_game as game
-import tcp_messages as tcp
-loader = game.CellWorldLoader(world_name="21_05")
-model = game.BotEvade(world_name="21_05",
-                      render=True,
-                      time_step=.025)
-model.prey.dynamics.turn_speed = 0
-model.prey.dynamics.forward_speed = 0
-model.reset()
-
-
-server = tcp.MessageServer()
-
-
-def move_mouse(message: tcp.Message):
-    step: cw.Step = message.get_body(body_type=cw.Step)
-    model.prey.state.location = (step.location.x, step.location.y)
-
-
-def get_predator_step(message):
-    predator_step = cw.Step(agent_name="predator")
-    predator_step.location = cw.Location(*model.predator.state.location)
-    return predator_step
-
-
-def reset(message):
-    model.reset()
-
-
-running = True
-
-
-def stop(message):
-    global running
-    running = False
-
-
-server.router.add_route("reset", reset)
-server.router.add_route("move_mouse", move_mouse)
-server.router.add_route("get_predator_step", move_mouse)
-server.router.add_route("stop", stop)
-
-server.allow_subscription = True
-server.start(666)
-
-# model.view.add_event_handler("mouse_move", move_mouse)
-while running:
-    model.step()
-    predator_step = cw.Step(agent_name="predator")
-    predator_step.location = cw.Location(*model.predator.state.location)
-    # predator_step.rotation = model.predator.state.direction
-    server.broadcast_subscribed(message=tcp.Message("predator_move", body=predator_step))
-
-
-=======
 import cellworld as cw
 import cellworld_game as game
 import tcp_messages as tcp
@@ -104,18 +47,28 @@ model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
 model.reset()
 
-server = tcp.MessageServer(ip=IP) # run on localhost
+server = tcp.MessageServer(ip=ip) # run on localhost
 
 def move_mouse(message):
+    global server
+    print(server.router.routes)
+    print(message)
     step: cw.Step = message.get_body(body_type=cw.Step)
-    model.prey.state.location = (step.location.x, step.location.y)
-    global sample_count_prey
-    sample_count_prey += 1 
+    pass
+    # model.prey.state.location = (step.location.x, step.location.y)
+    # global sample_count_prey
+    # sample_count_prey += 1 
 
 def get_predator_step(message):
     predator_step = cw.Step(agent_name="predator")
     predator_step.location = cw.Location(*model.predator.state.location)
     return predator_step
+
+#todo: add function that calls reset but accepts string with experiment_name from UE
+# steps: 1) add route to this server (e.g "reset_experiment") 
+# 2) add function that accepts message with experiment_name 
+# 3) change experiment_name for game.save_log_output to be a global variable
+# 4) call original reset with experiment_name
 
 def reset(message):
     global t0
@@ -134,9 +87,11 @@ def _stop_(message):
 
 def on_connection(connection=None)->None:
     print(f"connected: {connection}")
-    
+
 def on_unrouted(message:tcp.Message=None)->None:
-    print(f"unrouted: {message.header}")
+    global server
+    print(server.router.routing_count.keys())
+    print(f"unrouted: {message}")
 
 def _pause_(message:tcp.Message=None)->None:
     model.pause()
@@ -144,7 +99,7 @@ def _pause_(message:tcp.Message=None)->None:
 
 server.router.add_route("reset", reset)
 server.router.add_route("prey_step", move_mouse)
-server.router.add_route("get_predator_step", move_mouse)
+# server.router.add_route("get_predator_step", move_mouse)
 server.router.add_route("stop", _stop_)
 server.router.add_route("pause", _pause_)
 
@@ -174,4 +129,3 @@ while running:
     predator_step.rotation = model.predator.state.direction
     server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
     sample_count_predator += 1
->>>>>>> fixing
