@@ -70,7 +70,11 @@ class ServerTrackingService(ct.TrackingService):
     def run(self)->bool:
         res = False
         try:
+<<<<<<< HEAD
             res = self.start(port=4510)
+=======
+            res = self.start(port=4970)
+>>>>>>> fixing
             self.log("Started service.",res)
         except OSError:
             self.log("lol server is still refreshing")

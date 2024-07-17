@@ -12,6 +12,7 @@ _deps
 
 **/.idea/
 # build files 
+<<<<<<< HEAD
 **/build/
 **/logs/*
 .cellworld_cache/
@@ -19,3 +20,18 @@ perf_report.html
 # ignore all .json files in the "/logs/" directory
 **/logs/*.log
 **/logs/*.json
+=======
+**/cmake-build-debug/
+**/cmake/
+**/git-dependencies/
+**/build/
+**/logs/*
+**/venvrobot/
+**/venv/
+**/cmake
+# ignore all .json files in the "/logs/" directory
+**/logs/*.log
+**/logs/*.json
+
+/.idea/
+>>>>>>> fixing

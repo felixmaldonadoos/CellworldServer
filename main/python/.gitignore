@@ -1,5 +1,9 @@
 # venv 
 venv/
+<<<<<<< HEAD
+=======
+logs/* 
+>>>>>>> fixing
 
 # Prerequisites
 *.d

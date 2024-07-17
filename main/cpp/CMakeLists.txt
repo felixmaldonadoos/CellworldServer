@@ -34,7 +34,10 @@ install_git_dependency(Cellworld-Experiment-Service
         IMPORT_TARGETS
         json-cpp cellworld experiment_service tcp_messages)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> fixing
 install_git_dependency( Cellworld-Tracking-Service
         https://github.com/cellworld/cellworld_agent_tracking
         PRIVATE

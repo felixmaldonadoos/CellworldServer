@@ -29,6 +29,10 @@ $portl+= "4550"
 $portl+= "4560"
 $portl+= "4566"
 $portl+= "4970"
+<<<<<<< HEAD
+=======
+$portl+= "4790"
+>>>>>>> fixing
 $portl+= "4570"
 $portl+= "4580"
 $portl+= "4590"

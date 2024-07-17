@@ -55,6 +55,10 @@ experiment::Start_experiment_response vr_server::Vr_service::start_experiment(ex
 bool vr_server::Vr_service::finish_experiment(const experiment::Finish_experiment_request &request) {
     bool response = ((Vr_server *) this->_server)->experiment_server.finish_experiment(request);
     std::cout << "FINISH EXPERIMENT RESPONSE: " << response << std::endl;
+<<<<<<< HEAD
+=======
+    std::cout << "FINISH EXPERIMENT REQUEST (IN): " << request << std::endl;
+>>>>>>> fixing
     return response;
 }
 
@@ -89,10 +93,17 @@ void vr_server::Vr_service::on_prey_step(cell_world::Step & step) {
     this->process_on_step(step);
     tcp_messages::Message message;
 
+<<<<<<< HEAD
 //    message.header = "predator_step";
 //    // todo: implement PC
 //    message.body = step.to_json();
 //    this->send_message(message);
+=======
+    message.header = "predator_step";
+    // todo: implement PC
+    message.body = step.to_json();
+    this->send_message(message);
+>>>>>>> fixing
 }
 
 // todo: struct that manages experiment queue
