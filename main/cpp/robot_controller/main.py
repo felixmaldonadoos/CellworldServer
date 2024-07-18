@@ -1,8 +1,12 @@
+print("=== Starting BotEvade Agent Tracking Server ===")
 import cellworld as cw
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import cellworld_game as game
 import tcp_messages as tcp
 import argparse 
 import time
+from datetime import datetime
 
 # todo:
 # 1. create route for cpp server to send predator data to python server
@@ -40,7 +44,24 @@ model = game.BotEvade(world_name="21_05",
                       render=render,
                       time_step=time_step) 
 
-game.save_log_output(model = model, experiment_name = "ExperimentNameTemp", 
+def generate_experiment_name(basename:str = "ExperimentNameBase"):
+    current_time = datetime.now()
+    formatted_time = current_time.strftime("%m%d%Y_%H%M%S")
+    return f"{basename}_{formatted_time}"
+
+def get_valid_input(prompt):
+    while True:
+        user_input = input(prompt)
+        if user_input.isalpha():
+            return user_input
+        else:
+            print("Invalid input. Please enter only alphabetic characters.")
+
+# Example usage
+subject_name_input = get_valid_input("Enter your name (only letters, no symbols or numbers): ")
+experiment_name = generate_experiment_name(subject_name_input)
+
+game.save_log_output(model = model, experiment_name=experiment_name, 
     log_folder='logs/', save_checkpoint=True)
 
 model.prey.dynamics.turn_speed = 10
