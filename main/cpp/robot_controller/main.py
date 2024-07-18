@@ -47,17 +47,15 @@ model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
 model.reset()
 
+global server
 server = tcp.MessageServer(ip=ip) # run on localhost
 
 def move_mouse(message):
-    global server
-    print(server.router.routes)
-    print(message)
     step: cw.Step = message.get_body(body_type=cw.Step)
+    model.prey.state.location = (step.location.x, step.location.y)
+    global sample_count_prey
+    sample_count_prey += 1 
     pass
-    # model.prey.state.location = (step.location.x, step.location.y)
-    # global sample_count_prey
-    # sample_count_prey += 1 
 
 def get_predator_step(message):
     predator_step = cw.Step(agent_name="predator")
@@ -89,9 +87,8 @@ def on_connection(connection=None)->None:
     print(f"connected: {connection}")
 
 def on_unrouted(message:tcp.Message=None)->None:
-    global server
-    print(server.router.routing_count.keys())
     print(f"unrouted: {message}")
+    print(server.router.routing_count.keys())
 
 def _pause_(message:tcp.Message=None)->None:
     model.pause()
