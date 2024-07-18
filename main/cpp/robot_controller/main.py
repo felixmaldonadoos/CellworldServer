@@ -11,7 +11,6 @@ import time
 sample_count_prey = 0
 sample_count_predator = 0
 
-
 PORT = 4790 
 RENDER = True
 FS = 90
@@ -21,7 +20,7 @@ parser = argparse.ArgumentParser(description='BotEvadeVR: Agent Tracking Server.
 parser.add_argument('--ip', type=str, default=IP, help=f'Server host (default: {IP})')
 parser.add_argument('--port','-p', type=int, default=PORT, help=f'Server port (default: {PORT})')
 parser.add_argument('--sampling_rate','-fs', type=float, default=FS, help=f'Sampling rate (default: {FS})')
-parser.add_argument('--render', '-r', action='store_true', help=f'Enable rendering (default: {RENDER})')
+parser.add_argument('--render', '-r', action='store_true',default=RENDER, help=f'Enable rendering (default: {RENDER})')
 
 args = parser.parse_args()
 
@@ -47,9 +46,10 @@ model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
 model.reset()
 
-server = tcp.MessageServer(ip=IP) # run on localhost
+server = tcp.MessageServer(ip=ip) # run on localhost
 
 def move_mouse(message):
+    print(f"{message.body}")
     step: cw.Step = message.get_body(body_type=cw.Step)
     model.prey.state.location = (step.location.x, step.location.y)
     global sample_count_prey
@@ -90,7 +90,6 @@ server.router.add_route("prey_step", move_mouse)
 server.router.add_route("get_predator_step", move_mouse)
 server.router.add_route("stop", _stop_)
 server.router.add_route("pause", _pause_)
-
 # server.router.add_route("stop")
 server.router.unrouted_message = on_unrouted
 server.failed_messages = "failed"
