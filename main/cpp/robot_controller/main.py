@@ -39,8 +39,8 @@ data_buffer = {"prey":[], "predator":[]}
 print(f'Rendering: {render} | time step: {time_step:0.4f} ({args.sampling_rate} Hz)')
 print(f"=== starting server on {ip}:{port} ===\n")
 
-loader = game.CellWorldLoader(world_name="21_05")
-model = game.BotEvade(world_name="21_05",
+loader = game.CellWorldLoader(world_name="21_05") # original: "21_05"
+model = game.BotEvade(world_name="21_05", # 21_05
                       render=render,
                       time_step=time_step) 
 
@@ -66,6 +66,7 @@ game.save_log_output(model = model, experiment_name=experiment_name,
 
 model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
+print("init reset")
 model.reset()
 
 global server
@@ -75,8 +76,9 @@ def move_mouse(message):
     step: cw.Step = message.get_body(body_type=cw.Step)
     model.prey.state.location = (step.location.x, step.location.y)
     global sample_count_prey
-    sample_count_prey += 1 
-    pass
+    sample_count_prey += 1
+    if sample_count_prey % 200 == 0:
+        print(f"prey count: {sample_count_prey}") 
 
 def get_predator_step(message):
     predator_step = cw.Step(agent_name="predator")
@@ -91,11 +93,12 @@ def get_predator_step(message):
 
 def reset(message):
     global t0
-    t0 = time.time()
-    sample_count_prey = 0 
-    sample_count_predator = 0
-    print("New Episode Started")
-    model.reset()
+    if time.time() - t0 >= 15:
+        t0 = time.time()
+        sample_count_prey = 0 
+        sample_count_predator = 0
+        print("New Episode Started")
+        model.reset()
 
 running = True
 
@@ -109,9 +112,10 @@ def on_connection(connection=None)->None:
 
 def on_unrouted(message:tcp.Message=None)->None:
     print(f"unrouted: {message}")
-    print(server.router.routing_count.keys())
+    # print(server.router.routing_count.keys())
 
 def _pause_(message:tcp.Message=None)->None:
+    print(f"Pausing: {message}")
     model.pause()
     return "success"
 
@@ -135,15 +139,18 @@ print(f"connections: {len(server.connections)}")
 
 t0 = time.time()
 while running:
-    if (sample_count_prey != 0) and (sample_count_prey % 500 == 0):
-        pass
+    # if (sample_count_prey != 0) and (sample_count_prey % 500 == 0):
+        # print("running still")
         # t = time.time() - t0
         # print(f"fs: prey (in): {sample_count_prey/t} | predator (out): {sample_count_predator/t}")
         # print(f"connections: {len(server.connections)} | subscriptions: {len(server.subscriptions)}")
 
+    # if sample_count_prey % 30 == 0:
     model.step()
     predator_step = cw.Step(agent_name="predator")
     predator_step.location = cw.Location(*model.predator.state.location)
     predator_step.rotation = model.predator.state.direction
     server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
-    sample_count_predator += 1
+        # sample_count_predator += 1
+
+print("done!")
