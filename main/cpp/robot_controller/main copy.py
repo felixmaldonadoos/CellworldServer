@@ -74,9 +74,7 @@ server = tcp.MessageServer(ip=ip) # run on localhost
 
 def move_mouse(message):
     step: cw.Step = message.get_body(body_type=cw.Step)
-    model.prey.sta
-    
-    te.location = (step.location.x, step.location.y)
+    model.prey.state.location = (step.location.x, step.location.y)
     global sample_count_prey
     sample_count_prey += 1
     if sample_count_prey % 200 == 0:

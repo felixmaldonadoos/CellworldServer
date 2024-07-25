@@ -15,7 +15,6 @@ from datetime import datetime
 sample_count_prey = 0
 sample_count_predator = 0
 
-
 PORT = 4790 
 RENDER = True
 FS = 90
