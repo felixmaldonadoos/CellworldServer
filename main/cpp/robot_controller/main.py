@@ -22,6 +22,7 @@ IP = "172.23.126.101"
 
 parser = argparse.ArgumentParser(description='BotEvadeVR: Agent Tracking Server.')
 parser.add_argument('--ip', type=str, default=IP, help=f'Server host (default: {IP})')
+parser.add_argument('--name','-n', type=str, default=None, help=f'Experiment (subject) name/id (default: {None})')
 parser.add_argument('--port','-p', type=int, default=PORT, help=f'Server port (default: {PORT})')
 parser.add_argument('--sampling_rate','-fs', type=float, default=FS, help=f'Sampling rate (default: {FS})')
 parser.add_argument('--render', '-r', action='store_true', help=f'Enable rendering (default: {RENDER})')
@@ -32,6 +33,7 @@ ip = args.ip
 port = args.port
 time_step = 1/args.sampling_rate # time step 
 render = args.render
+experiment_name = args.name
 
 data_buffer = {"prey":[], "predator":[]}
 
@@ -57,15 +59,17 @@ def get_valid_input(prompt):
             print("Invalid input. Please enter only alphabetic characters.")
 
 # Example usage
-subject_name_input = get_valid_input("Enter your name (only letters, no symbols or numbers): ")
-experiment_name = generate_experiment_name(subject_name_input)
+if experiment_name is None:
+    experiment_name = get_valid_input("Enter your name (only letters, no symbols or numbers): ")
+
+experiment_name = generate_experiment_name(experiment_name)
 
 game.save_log_output(model = model, experiment_name=experiment_name, 
     log_folder='logs/', save_checkpoint=True)
 
 model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
-print("init reset")
+print("- Init reset")
 model.reset()
 
 global server
@@ -73,11 +77,15 @@ server = tcp.MessageServer(ip=ip) # run on localhost
 
 def move_mouse(message):
     step: cw.Step = message.get_body(body_type=cw.Step)
+    if step is None:
+        print("step is none")
+        return
+    
     model.prey.state.location = (step.location.x, step.location.y)
     global sample_count_prey
     sample_count_prey += 1
     if sample_count_prey % 200 == 0:
-        print(f"prey count: {sample_count_prey}") 
+        print(f"prey count: {sample_count_prey} | frame: {step.frame}") 
 
 def get_predator_step(message):
     predator_step = cw.Step(agent_name="predator")
@@ -91,13 +99,14 @@ def get_predator_step(message):
 # 4) call original reset with experiment_name
 
 def reset(message):
+    print(message)
     global t0
-    if time.time() - t0 >= 15:
-        t0 = time.time()
-        sample_count_prey = 0 
-        sample_count_predator = 0
-        print("New Episode Started")
-        model.reset()
+    # if time.time() - t0 >= 2:
+    t0 = time.time()
+    sample_count_prey = 0 
+    sample_count_predator = 0
+    print("New Episode Started")
+    model.reset()
 
 running = True
 
@@ -150,6 +159,7 @@ while running:
     predator_step.location = cw.Location(*model.predator.state.location)
     predator_step.rotation = model.predator.state.direction
     server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
-        # sample_count_predator += 1
-
+    sample_count_predator+=1
+    # print(f"pred step: {predator_step.location}")
+    print(f"pred step: {model.prey.state.location} | {sample_count_prey}")
 print("done!")
