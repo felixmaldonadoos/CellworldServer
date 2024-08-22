@@ -17,7 +17,7 @@ sample_count_predator = 0
 
 PORT = 4790 
 RENDER = True
-FS = 90
+FS = 60
 IP = "172.23.126.101"
 
 parser = argparse.ArgumentParser(description='BotEvadeVR: Agent Tracking Server.')
@@ -34,8 +34,6 @@ port = args.port
 time_step = 1/args.sampling_rate # time step 
 render = args.render
 experiment_name = args.name
-
-data_buffer = {"prey":[], "predator":[]}
 
 print(f'Rendering: {render} | time step: {time_step:0.4f} ({args.sampling_rate} Hz)')
 print(f"=== starting server on {ip}:{port} ===\n")
@@ -67,10 +65,13 @@ experiment_name = generate_experiment_name(experiment_name)
 game.save_log_output(model = model, experiment_name=experiment_name, 
     log_folder='logs/', save_checkpoint=True)
 
+
 model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
-print("- Init reset")
-model.reset()
+
+#todo: check if this creates misalignment
+# print("- Init reset")
+# model.reset()
 
 global server
 server = tcp.MessageServer(ip=ip) # run on localhost
@@ -83,55 +84,57 @@ def move_mouse(message):
     
     model.prey.state.location = (step.location.x, step.location.y)
     global sample_count_prey
+    global bCanUpdate
     sample_count_prey += 1
-    if sample_count_prey % 200 == 0:
-        print(f"prey count: {sample_count_prey} | frame: {step.frame}") 
+    bCanUpdate = True
 
 def get_predator_step(message):
     predator_step = cw.Step(agent_name="predator")
     predator_step.location = cw.Location(*model.predator.state.location)
     return predator_step
 
-#todo: add function that calls reset but accepts string with experiment_name from UE
-# steps: 1) add route to this server (e.g "reset_experiment") 
-# 2) add function that accepts message with experiment_name 
-# 3) change experiment_name for game.save_log_output to be a global variable
-# 4) call original reset with experiment_name
-
 def reset(message):
-    print(message)
+    # if model.paused:
+    #     model.pause()
+    #     print(f"Paused: {model.paused}")
+
     global t0
-    # if time.time() - t0 >= 2:
     t0 = time.time()
     sample_count_prey = 0 
     sample_count_predator = 0
-    print("New Episode Started")
     model.reset()
-
+    print("New Episode Started")
+    return 'success'
+    
 running = True
 
-def _stop_(message):
-    print("stopping")
+def _close_():
+    print('_close_')
+    model.close()
     global running
     running = False
+
+def _stop_(message):
+    print("_stop_")
+    model.stop()
+    # global running
+    # running = False
 
 def on_connection(connection=None)->None:
     print(f"connected: {connection}")
 
 def on_unrouted(message:tcp.Message=None)->None:
     print(f"unrouted: {message}")
-    # print(server.router.routing_count.keys())
 
 def _pause_(message:tcp.Message=None)->None:
     print(f"Pausing: {message}")
     model.pause()
-    return "success"
 
 server.router.add_route("reset", reset)
 server.router.add_route("prey_step", move_mouse)
-# server.router.add_route("get_predator_step", move_mouse)
 server.router.add_route("stop", _stop_)
 server.router.add_route("pause", _pause_)
+server.router.add_route("close", _close_)
 
 # server.router.add_route("stop")
 server.router.unrouted_message = on_unrouted
@@ -146,20 +149,21 @@ print(f"server started {server.running} (allow subscription: {server.allow_subsc
 print(f"connections: {len(server.connections)}")
 
 t0 = time.time()
+global bCanUpdate
+bCanUpdate = False
 while running:
-    # if (sample_count_prey != 0) and (sample_count_prey % 500 == 0):
-        # print("running still")
-        # t = time.time() - t0
-        # print(f"fs: prey (in): {sample_count_prey/t} | predator (out): {sample_count_predator/t}")
-        # print(f"connections: {len(server.connections)} | subscriptions: {len(server.subscriptions)}")
-
-    # if sample_count_prey % 30 == 0:
-    model.step()
-    predator_step = cw.Step(agent_name="predator")
-    predator_step.location = cw.Location(*model.predator.state.location)
-    predator_step.rotation = model.predator.state.direction
-    server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
-    sample_count_predator+=1
+    print('running')
+    if bCanUpdate:
+        print('calling: model.step()') 
+        model.step()
+        predator_step = cw.Step(agent_name="predator")
+        predator_step.location = cw.Location(*model.predator.state.location)
+        predator_step.rotation = model.predator.state.direction
+        server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
+        sample_count_predator+=1
+        bCanUpdate = False
+    # if (sample_count_predator % 900 == 0):
+    #     print(f'Subscribers: {len(server.subscriptions)} | Connections: {len(server.connections)} | Steps (prey/pred) {sample_count_prey}/{sample_count_predator}')
     # print(f"pred step: {predator_step.location}")
-    print(f"pred step: {model.prey.state.location} | {sample_count_prey}")
+    # print(f"prey step: {model.prey.state.location} | {sample_count_prey}")
 print("done!")

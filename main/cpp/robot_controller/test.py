@@ -26,8 +26,35 @@ client.router.add_route("reset", myprint)
 # client.router.add_route("predator_step", myprint)
 client.router.on_unrouted = myprint
 
-client.send_message(tcp.Message(header="reset",body=""))
+# client.send_message(tcp.Message(header="reset",body=""))
 
+def stop_and_reset(client):
+    print('sending reset 1')
+    msg = tcp.Message(header='reset',body='')
+    client.send_message(msg)
+    
+    print('sending stop')
+    time.sleep(1)
+    msg = tcp.Message(header='stop',body='')
+    client.send_message(msg)
+
+    print('sending reset 2')
+    time.sleep(1)
+    msg = tcp.Message(header='reset',body='')
+    client.send_message(msg)
+    return 
+
+def reset_and_stop_once(client):
+    print('sending reset 1')
+    msg = tcp.Message(header='reset',body='')
+    client.send_message(msg)
+    
+    print('sending close')
+    time.sleep(1)
+    msg = tcp.Message(header='stop',body='')
+    client.send_message(msg)
+
+<<<<<<< HEAD
 # create path to evaluate 
 N = 1000
 step_size = 0.01
@@ -35,6 +62,16 @@ fs = 90 # 90 Hz
 T = 1/fs 
 i = 0
 loops = 0
+=======
+while True:
+    reset_and_stop_once(client)
+    # client.send_message(msg)
+    # print(msg)
+    # msg = tcp.Message(header="prey_step", body=cw.Step(location=cw.Location(1,1)*np.random.randint(0, 1)))
+    # client.send_message(msg)
+    # print(msg)
+    break
+>>>>>>> 00abcfe (continued working on testing issue with frames/logs)
 
 path = PolygonHab().generate_path(N=N, step_size=step_size)
 
