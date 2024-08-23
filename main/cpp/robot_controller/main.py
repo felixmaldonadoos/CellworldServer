@@ -1,6 +1,7 @@
 print("=== Starting BotEvade Agent Tracking Server ===")
 import cellworld as cw
 import os
+import mylog
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import cellworld_game as game
 import tcp_messages as tcp
@@ -62,9 +63,8 @@ if experiment_name is None:
 
 experiment_name = generate_experiment_name(experiment_name)
 
-game.save_log_output(model = model, experiment_name=experiment_name, 
+_, _, _, save_step = mylog.save_log_output(model = model, experiment_name=experiment_name, 
     log_folder='logs/', save_checkpoint=True)
-
 
 model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
@@ -83,9 +83,13 @@ def move_mouse(message):
         return
     
     model.prey.state.location = (step.location.x, step.location.y)
+    model.prey.state.direction = step.rotation
+    model.time = step.time_stamp
     global sample_count_prey
+    sample_count_prey = step.frame
+    save_step(step.time_stamp, step.frame) # saving step 
+    
     global bCanUpdate
-    sample_count_prey += 1
     bCanUpdate = True
 
 def get_predator_step(message):
@@ -100,6 +104,8 @@ def reset(message):
 
     global t0
     t0 = time.time()
+    global sample_count_prey
+    global sample_count_predator
     sample_count_prey = 0 
     sample_count_predator = 0
     model.reset()
@@ -117,6 +123,8 @@ def _close_():
 def _stop_(message):
     print("_stop_")
     model.stop()
+    global bCanUpdate
+    bCanUpdate = False
     # global running
     # running = False
 
@@ -152,18 +160,14 @@ t0 = time.time()
 global bCanUpdate
 bCanUpdate = False
 while running:
-    print('running')
     if bCanUpdate:
-        print('calling: model.step()') 
         model.step()
         predator_step = cw.Step(agent_name="predator")
         predator_step.location = cw.Location(*model.predator.state.location)
         predator_step.rotation = model.predator.state.direction
+        # save_step(model.time, sample_count_prey) # saving step 
         server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
-        sample_count_predator+=1
+        
         bCanUpdate = False
-    # if (sample_count_predator % 900 == 0):
-    #     print(f'Subscribers: {len(server.subscriptions)} | Connections: {len(server.connections)} | Steps (prey/pred) {sample_count_prey}/{sample_count_predator}')
-    # print(f"pred step: {predator_step.location}")
-    # print(f"prey step: {model.prey.state.location} | {sample_count_prey}")
+        sample_count_predator += 1
 print("done!")
