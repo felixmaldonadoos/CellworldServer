@@ -8,7 +8,7 @@ import tcp_messages as tcp
 import argparse 
 import time
 from datetime import datetime
-
+import threading
 # todo:
 # 1. create route for cpp server to send predator data to python server
 # 2. add thread to clear data and send to cpp server for storage. if data empty, wait for data to be filled 
@@ -42,7 +42,9 @@ print(f"=== starting server on {ip}:{port} ===\n")
 loader = game.CellWorldLoader(world_name="21_05") # original: "21_05"
 model = game.BotEvade(world_name="21_05", # 21_05
                       render=render,
-                      time_step=time_step) 
+                      time_step=time_step, 
+                      real_time=True, 
+                      goal_threshold= -1.0) 
 
 def generate_experiment_name(basename:str = "ExperimentNameBase"):
     current_time = datetime.now()
@@ -63,15 +65,15 @@ if experiment_name is None:
 
 experiment_name = generate_experiment_name(experiment_name)
 
-_, _, _, save_step = mylog.save_log_output(model = model, experiment_name=experiment_name, 
+_, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_name=experiment_name, 
     log_folder='logs/', save_checkpoint=True)
 
 model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
 
 #todo: check if this creates misalignment
-# print("- Init reset")
-# model.reset()
+print("- Init reset")
+model.reset()
 
 global server
 server = tcp.MessageServer(ip=ip) # run on localhost
@@ -87,6 +89,7 @@ def move_mouse(message):
     model.time = step.time_stamp
     global sample_count_prey
     sample_count_prey = step.frame
+    # threading.Thread(target=save_step, args=(step.time_stamp, step.frame,)).start()
     save_step(step.time_stamp, step.frame) # saving step 
     
     global bCanUpdate
@@ -98,6 +101,7 @@ def get_predator_step(message):
     return predator_step
 
 def reset(message):
+    print("reset()")
     # if model.paused:
     #     model.pause()
     #     print(f"Paused: {model.paused}")
@@ -160,8 +164,8 @@ t0 = time.time()
 global bCanUpdate
 bCanUpdate = False
 while running:
+    model.step()
     if bCanUpdate:
-        model.step()
         predator_step = cw.Step(agent_name="predator")
         predator_step.location = cw.Location(*model.predator.state.location)
         predator_step.rotation = model.predator.state.direction
@@ -170,4 +174,5 @@ while running:
         
         bCanUpdate = False
         sample_count_predator += 1
+
 print("done!")

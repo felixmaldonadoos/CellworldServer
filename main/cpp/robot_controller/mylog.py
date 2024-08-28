@@ -28,10 +28,13 @@ def save_log_output(model: Model,
     def after_stop(*args):
         import os
         import time as time 
-        print('mylog.py after_stop')
-        time.sleep(1)
+        # print('mylog.py after_stop')
+        time.sleep(0.5)
         output_file = os.path.join(log_folder, f"{experiment_name}.json")
-        experiment.save(output_file)
+        import threading
+        print('mylog.py after_stop - thread starting: experiment.save')
+        threading.Thread(target=experiment.save, args=(output_file,)).start()
+        
         
     def save_step(timestamp, inframe):
         print(f'Saving step manually: frame # {inframe} | timestamp: {timestamp} s')
@@ -65,11 +68,11 @@ def save_log_output(model: Model,
         model.add_event_handler("puff", puff)
 
     model.add_event_handler("after_reset", after_reset)
-    model.add_event_handler("after_step", after_step)
+    # model.add_event_handler("after_step", after_step)
     if save_checkpoint:
+        # print("mylog.py skipping: model.add_event_handler('after_stop', after_stop)!")
         model.add_event_handler("after_stop", after_stop)
     else:
         model.add_event_handler("close", after_stop)
-
         
     return after_reset, after_step, after_stop, save_step
