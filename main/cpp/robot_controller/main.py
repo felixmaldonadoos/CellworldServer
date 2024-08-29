@@ -9,16 +9,13 @@ import argparse
 import time
 from datetime import datetime
 import threading
-# todo:
-# 1. create route for cpp server to send predator data to python server
-# 2. add thread to clear data and send to cpp server for storage. if data empty, wait for data to be filled 
 
 sample_count_prey = 0
 sample_count_predator = 0
 
 PORT = 4790 
 RENDER = True
-FS = 60
+FS = 90
 IP = "172.23.126.101"
 
 parser = argparse.ArgumentParser(description='BotEvadeVR: Agent Tracking Server.')
@@ -59,7 +56,6 @@ def get_valid_input(prompt):
         else:
             print("Invalid input. Please enter only alphabetic characters.")
 
-# Example usage
 if experiment_name is None:
     experiment_name = get_valid_input("Enter your name (only letters, no symbols or numbers): ")
 
@@ -71,9 +67,7 @@ _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_na
 model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
 
-#todo: check if this creates misalignment
-print("- Init reset")
-model.reset()
+
 
 global server
 server = tcp.MessageServer(ip=ip) # run on localhost
@@ -87,13 +81,7 @@ def move_mouse(message):
     model.prey.state.location = (step.location.x, step.location.y)
     model.prey.state.direction = step.rotation
     model.time = step.time_stamp
-    global sample_count_prey
-    sample_count_prey = step.frame
-    # threading.Thread(target=save_step, args=(step.time_stamp, step.frame,)).start()
     save_step(step.time_stamp, step.frame) # saving step 
-    
-    global bCanUpdate
-    bCanUpdate = True
 
 def get_predator_step(message):
     predator_step = cw.Step(agent_name="predator")
@@ -102,22 +90,10 @@ def get_predator_step(message):
 
 def reset(message):
     print("reset()")
-    # if model.paused:
-    #     model.pause()
-    #     print(f"Paused: {model.paused}")
-
-    global t0
-    t0 = time.time()
-    global sample_count_prey
-    global sample_count_predator
-    sample_count_prey = 0 
-    sample_count_predator = 0
     model.reset()
     print("New Episode Started")
     return 'success'
     
-running = True
-
 def _close_():
     print('_close_')
     model.close()
@@ -129,8 +105,6 @@ def _stop_(message):
     model.stop()
     global bCanUpdate
     bCanUpdate = False
-    # global running
-    # running = False
 
 def on_connection(connection=None)->None:
     print(f"connected: {connection}")
@@ -142,13 +116,14 @@ def _pause_(message:tcp.Message=None)->None:
     print(f"Pausing: {message}")
     model.pause()
 
+running = True
+
 server.router.add_route("reset", reset)
 server.router.add_route("prey_step", move_mouse)
 server.router.add_route("stop", _stop_)
 server.router.add_route("pause", _pause_)
 server.router.add_route("close", _close_)
 
-# server.router.add_route("stop")
 server.router.unrouted_message = on_unrouted
 server.failed_messages = "failed"
 
@@ -156,23 +131,18 @@ server.allow_subscription = True
 server.start(PORT)
 server.on_new_connection = on_connection
 
-# model.view.add_event_handler("mouse_move", move_mouse)
 print(f"server started {server.running} (allow subscription: {server.allow_subscription})")
 print(f"connections: {len(server.connections)}")
 
-t0 = time.time()
-global bCanUpdate
-bCanUpdate = False
+#todo: check if this creates misalignment
+print("- Init reset")
+model.reset()
+
 while running:
     model.step()
-    if bCanUpdate:
-        predator_step = cw.Step(agent_name="predator")
-        predator_step.location = cw.Location(*model.predator.state.location)
-        predator_step.rotation = model.predator.state.direction
-        # save_step(model.time, sample_count_prey) # saving step 
-        server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
-        
-        bCanUpdate = False
-        sample_count_predator += 1
+    predator_step = cw.Step(agent_name="predator")
+    predator_step.location = cw.Location(*model.predator.state.location)
+    predator_step.rotation = model.predator.state.direction
+    server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
 
 print("done!")

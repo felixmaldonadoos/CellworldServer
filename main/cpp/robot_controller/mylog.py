@@ -37,7 +37,7 @@ def save_log_output(model: Model,
         
         
     def save_step(timestamp, inframe):
-        print(f'Saving step manually: frame # {inframe} | timestamp: {timestamp} s')
+        # print(f'Saving step manually: frame # {inframe} | timestamp: {timestamp} s')
         episode: cw.Episode = experiment.episodes[-1]
         for agent_name, agent in model.agents.items():
             agent_step = cw.Step(time_stamp=timestamp,
