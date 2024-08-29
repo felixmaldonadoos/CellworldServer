@@ -1,14 +1,12 @@
 print("=== Starting BotEvade Agent Tracking Server ===")
-import cellworld as cw
 import os
-import mylog
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import cellworld as cw
+import mylog
 import cellworld_game as game
 import tcp_messages as tcp
 import argparse 
-import time
 from datetime import datetime
-import threading
 
 sample_count_prey = 0
 sample_count_predator = 0
@@ -66,8 +64,6 @@ _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_na
 
 model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
-
-
 
 global server
 server = tcp.MessageServer(ip=ip) # run on localhost
