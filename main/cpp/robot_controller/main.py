@@ -68,6 +68,7 @@ experiment_name = generate_experiment_name(experiment_name)
 _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_name=experiment_name, 
     log_folder='logs/', save_checkpoint=True)
 
+# c.u./s 
 model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
 
@@ -78,7 +79,7 @@ model.prey.dynamics.forward_speed = 10
 global server
 server = tcp.MessageServer(ip=ip) # run on localhost
 
-def move_mouse(message):
+def move_mouse(message:tcp.Message=None):
     step: cw.Step = message.get_body(body_type=cw.Step)
     if step is None:
         print("step is none")
@@ -91,12 +92,12 @@ def move_mouse(message):
     mtx.release()
     save_step(step.time_stamp, step.frame) # saving step 
 
-def get_predator_step(message):
+def get_predator_step(message:tcp.Message=None):
     predator_step = cw.Step(agent_name="predator")
     predator_step.location = cw.Location(*model.predator.state.location)
     return predator_step
 
-def reset(message):
+def reset(message:tcp.Message=None):
     print("reset()")
     mtx.acquire()
     model.reset()
@@ -112,13 +113,11 @@ def _close_():
     # global running
     # running = False
 
-def _stop_(message):
-    print("_stop_")
+def _stop_(message:tcp.Message=None):
+    print(f"_stop_: Total time elapsed: {message.body}")
     mtx.acquire()
     model.stop()
     mtx.release()
-    global bCanUpdate
-    bCanUpdate = False
 
 def on_connection(connection=None)->None:
     print(f"connected: {connection}")
