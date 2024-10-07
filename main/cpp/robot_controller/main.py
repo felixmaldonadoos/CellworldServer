@@ -110,8 +110,6 @@ def _close_():
     mtx.acquire()
     model.close()
     mtx.release()
-    # global running
-    # running = False
 
 def _stop_(message:tcp.Message=None):
     print(f"_stop_: Total time elapsed: {message.body}")
