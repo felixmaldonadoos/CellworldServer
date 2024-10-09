@@ -43,9 +43,15 @@ model = game.BotEvade(world_name="21_05", # 21_05
                       render=render,
                       time_step=time_step, 
                       real_time=True, 
-                      goal_threshold= -1.0) 
+                      goal_threshold= -1.0,
+                      max_line_of_sight_distance=1.0) 
 
-# model.prey.active_navigation = False # cheat code - todo: check if fixes 
+def on_capture():
+    print("[main.py] puffed!")
+    if server: 
+        server.broadcast_subscribed(message=tcp.Message("on_capture", body="lol"))
+
+model.on_puff = on_capture
 
 def generate_experiment_name(basename:str = "ExperimentNameBase"):
     current_time = datetime.now()
@@ -72,12 +78,8 @@ _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_na
 model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
 
-# #todo: check if this creates misalignment
-# print("- Init reset")
-# model.reset()
-
 global server
-server = tcp.MessageServer(ip=ip) # run on localhost
+server = tcp.MessageServer(ip=ip)
 
 def move_mouse(message:tcp.Message=None):
     step: cw.Step = message.get_body(body_type=cw.Step)

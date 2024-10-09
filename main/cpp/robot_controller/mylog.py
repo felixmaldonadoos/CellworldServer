@@ -35,7 +35,6 @@ def save_log_output(model: Model,
         print('mylog.py after_stop - thread starting: experiment.save')
         threading.Thread(target=experiment.save, args=(output_file,)).start()
         
-        
     def save_step(timestamp, inframe):
         # print(f'Saving step manually: frame # {inframe} | timestamp: {timestamp} s')
         episode: cw.Episode = experiment.episodes[-1]
