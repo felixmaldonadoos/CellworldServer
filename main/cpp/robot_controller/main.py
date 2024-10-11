@@ -1,10 +1,7 @@
-<<<<<<< HEAD
-=======
 print("=== Starting BotEvade Agent Tracking Server ===")
 import os
 import time
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
->>>>>>> test/lineofsight
 import cellworld as cw
 import mylog
 import cellworld_game as game
@@ -28,7 +25,7 @@ parser.add_argument('--ip', type=str, default=IP, help=f'Server host (default: {
 parser.add_argument('--name','-n', type=str, default=None, help=f'Experiment (subject) name/id (default: {None})')
 parser.add_argument('--port','-p', type=int, default=PORT, help=f'Server port (default: {PORT})')
 parser.add_argument('--sampling_rate','-fs', type=float, default=FS, help=f'Sampling rate (default: {FS})')
-parser.add_argument('--render', '-r', action='store_true',default=RENDER, help=f'Enable rendering (default: {RENDER})')
+parser.add_argument('--render', '-r', action='store_true', help=f'Enable rendering (default: {RENDER})')
 
 args = parser.parse_args()
 
@@ -81,17 +78,10 @@ _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_na
 model.prey.dynamics.turn_speed = 10
 model.prey.dynamics.forward_speed = 10
 
-<<<<<<< HEAD
-server = tcp.MessageServer(ip=ip) # run on localhost
-
-def move_mouse(message):
-    print(f"{message.body}")
-=======
 global server
 server = tcp.MessageServer(ip=ip)
 
 def move_mouse(message:tcp.Message=None):
->>>>>>> test/lineofsight
     step: cw.Step = message.get_body(body_type=cw.Step)
     if step is None:
         print("step is none")
@@ -147,12 +137,8 @@ server.router.add_route("reset", reset)
 server.router.add_route("prey_step", move_mouse)
 server.router.add_route("stop", _stop_)
 server.router.add_route("pause", _pause_)
-<<<<<<< HEAD
-# server.router.add_route("stop")
-=======
 server.router.add_route("close", _close_)
 
->>>>>>> test/lineofsight
 server.router.unrouted_message = on_unrouted
 server.failed_messages = "failed"
 
@@ -177,9 +163,5 @@ while running:
     predator_step.rotation = model.predator.state.direction
     mtx.release()
     server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
-<<<<<<< HEAD
-    sample_count_predator += 1
-=======
     # print(len(server.subscriptions))
 print("done!")
->>>>>>> test/lineofsight
