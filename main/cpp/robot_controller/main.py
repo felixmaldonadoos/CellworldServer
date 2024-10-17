@@ -75,8 +75,8 @@ _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_na
     log_folder='logs/', save_checkpoint=True)
 
 # c.u./s 
-model.prey.dynamics.turn_speed = 10
-model.prey.dynamics.forward_speed = 10
+model.prey.dynamics.turn_speed = 15
+model.prey.dynamics.forward_speed = 15
 
 global server
 server = tcp.MessageServer(ip=ip)
