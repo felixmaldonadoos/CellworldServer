@@ -18,7 +18,7 @@ sample_count_predator = 0
 PORT = 4790 
 RENDER = True
 FS = 90
-IP = "172.23.126.101"
+IP = "192.168.1.199"
 
 parser = argparse.ArgumentParser(description='BotEvadeVR: Agent Tracking Server.')
 parser.add_argument('--ip', type=str, default=IP, help=f'Server host (default: {IP})')
@@ -32,19 +32,18 @@ args = parser.parse_args()
 ip = args.ip
 port = args.port
 time_step = 1/args.sampling_rate # time step 
-render = args.render
+render = True
 experiment_name = args.name
 
 print(f'Rendering: {render} | time step: {time_step:0.4f} ({args.sampling_rate} Hz)')
 print(f"=== starting server on {ip}:{port} ===\n")
 
 loader = game.CellWorldLoader(world_name="21_05") # original: "21_05"
-model = game.BotEvade(world_name="21_05", # 21_05
+model = game.BotEvade(world_name="21_05", 
                       render=render,
                       time_step=time_step, 
                       real_time=True, 
-                      goal_threshold= -1.0,
-                      max_line_of_sight_distance=1.0) 
+                      goal_threshold= -1.0)
 
 def on_capture():
     print("[main.py] puffed!")

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="cellworld_vr_server"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\cmake-build-debug-wsl\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="vr_server">
+				<Option output="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/libvr_server.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld_experiment_service/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_json-cpp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_date/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_easy-tcp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_tcp-messages/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld_agent_tracking/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_perf-analysis/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_requests/include"/>
+					<Add directory="/usr/include/c++/11"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/11"/>
+					<Add directory="/usr/include/c++/11/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/11/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 vr_server"/>
+					<CompileFile command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="vr_server/fast">
+				<Option output="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/libvr_server.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld_experiment_service/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_json-cpp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_date/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_easy-tcp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_tcp-messages/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld_agent_tracking/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_perf-analysis/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_requests/include"/>
+					<Add directory="/usr/include/c++/11"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/11"/>
+					<Add directory="/usr/include/c++/11/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/11/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 vr_server/fast"/>
+					<CompileFile command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="server">
+				<Option output="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld_experiment_service/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_json-cpp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_date/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_easy-tcp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_tcp-messages/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld_agent_tracking/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_perf-analysis/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_requests/include"/>
+					<Add directory="/usr/include/c++/11"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/11"/>
+					<Add directory="/usr/include/c++/11/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/11/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 server"/>
+					<CompileFile command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="server/fast">
+				<Option output="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld_experiment_service/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_json-cpp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_date/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_easy-tcp/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_tcp-messages/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/cellworld_agent_tracking/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_perf-analysis/include"/>
+					<Add directory="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/git-dependencies/dependency_requests/include"/>
+					<Add directory="/usr/include/c++/11"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/11"/>
+					<Add directory="/usr/include/c++/11/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/11/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 server/fast"/>
+					<CompileFile command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j24 -f &quot;/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/src/main.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/src/vr_server.cpp">
+			<Option target="vr_server"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/MacIverLab/Research/BotEvade/CellworldServer/main/cpp/cmake-build-debug-wsl/DependenciesConfig.cmake">
+			<Option virtualFolder="CMake Files\cmake-build-debug-wsl\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

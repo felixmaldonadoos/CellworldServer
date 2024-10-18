@@ -7,7 +7,7 @@ from PolygonLib import PolygonHab
 print("creating client")
 client = tcp.MessageClient()
 # client.connect(ip="172.26.176.129", port=4790)
-client.connect(ip='192.168.137.13', port=4790) # vr backpack
+client.connect(ip='192.168.1.199', port=4790) # vr backpack
 
 def myprint(msg):
     print(f'Unrouted: {msg}')
