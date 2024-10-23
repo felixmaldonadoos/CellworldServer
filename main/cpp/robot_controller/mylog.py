@@ -1,5 +1,7 @@
-import os.path
-
+# import os.path
+import os
+import time as time 
+import threading
 import cellworld as cw
 from cellworld_game import Model
 
@@ -20,23 +22,16 @@ def save_log_output(model: Model,
     frame = 0
 
     def after_reset(*args):
-        print('mylog.py after_reset')
         nonlocal frame
         experiment.episodes.append(cw.Episode())
         frame = 0
 
     def after_stop(*args):
-        import os
-        import time as time 
-        # print('mylog.py after_stop')
         time.sleep(0.5)
         output_file = os.path.join(log_folder, f"{experiment_name}.json")
-        import threading
-        print('mylog.py after_stop - thread starting: experiment.save')
         threading.Thread(target=experiment.save, args=(output_file,)).start()
         
     def save_step(timestamp, inframe):
-        # print(f'Saving step manually: frame # {inframe} | timestamp: {timestamp} s')
         episode: cw.Episode = experiment.episodes[-1]
         for agent_name, agent in model.agents.items():
             agent_step = cw.Step(time_stamp=timestamp,
@@ -45,7 +40,7 @@ def save_log_output(model: Model,
                                  agent_name=agent_name,
                                  frame=inframe)
             episode.trajectories.append(agent_step)
-            
+
     def after_step(*args):
         return
         nonlocal frame

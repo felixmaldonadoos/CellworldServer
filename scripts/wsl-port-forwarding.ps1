@@ -30,6 +30,7 @@ $portl+= "4560"
 $portl+= "4566"
 $portl+= "4970"
 $portl+= "4790"
+$portl+= "4791"
 $portl+= "4570"
 $portl+= "4580"
 $portl+= "4590"
@@ -46,6 +47,7 @@ $portl+= "4680"
 $portl+= "4690"
 $portl+= "4700"
 $portl+= "6006"
+
 
 for ($i = 0; $i -lt $portl.length; $i++) {
   $port = $portl[$i];

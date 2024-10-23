@@ -2,6 +2,7 @@ print("=== Starting BotEvade Agent Tracking Server ===")
 import os
 import time
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import json_cpp
 import cellworld as cw
 import mylog
 import cellworld_game as game
@@ -15,9 +16,9 @@ mtx = th.Lock()
 sample_count_prey = 0
 sample_count_predator = 0
 
-PORT = 4790 
+PORT = 4791 
 RENDER = True
-FS = 90
+FS = 60
 IP = "192.168.1.199"
 
 parser = argparse.ArgumentParser(description='BotEvadeVR: Agent Tracking Server.')
@@ -36,19 +37,24 @@ render = True
 experiment_name = args.name
 
 print(f'Rendering: {render} | time step: {time_step:0.4f} ({args.sampling_rate} Hz)')
-print(f"=== starting server on {ip}:{port} ===\n")
+print(f"*** starting server on {ip}:{port} ***\n")
 
 loader = game.CellWorldLoader(world_name="21_05") # original: "21_05"
+global model
 model = game.BotEvade(world_name="21_05", 
                       render=render,
                       time_step=time_step, 
                       real_time=True, 
-                      goal_threshold= -1.0)
+                      goal_threshold= -1.0,
+                      puff_cool_down_time=3)
 
 def on_capture():
-    print("[main.py] puffed!")
+    print("puffed!")
+    # mtx.acquire()
     if server: 
-        server.broadcast_subscribed(message=tcp.Message("on_capture", body="lol"))
+        server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
+    # mtx.release()
+    print("broadcasted")
 
 model.on_puff = on_capture
 
@@ -88,10 +94,10 @@ def move_mouse(message:tcp.Message=None):
     
     mtx.acquire()
     model.prey.state.location = (step.location.x, step.location.y)
-    model.prey.state.direction = step.rotation
+    model.prey.state.direction = step.rotation*(-1) # reverse rotation
     model.time = step.time_stamp
     mtx.release()
-    save_step(step.time_stamp, step.frame) # saving step 
+    save_step(step.time_stamp, step.frame) 
 
 def get_predator_step(message:tcp.Message=None):
     predator_step = cw.Step(agent_name="predator")
@@ -99,13 +105,13 @@ def get_predator_step(message:tcp.Message=None):
     return predator_step
 
 def reset(message:tcp.Message=None):
-    print("reset()")
+    global b_can_puff
     mtx.acquire()
     model.reset()
     mtx.release()
-    print("New Episode Started")
+    print(f"[ New Episode Started ]")
     return 'success'
-    
+
 def _close_():
     print('_close_')
     mtx.acquire()
@@ -113,7 +119,7 @@ def _close_():
     mtx.release()
 
 def _stop_(message:tcp.Message=None):
-    print(f"_stop_: Total time elapsed: {message.body}")
+    print(f"[ Episode Finished: Total time elapsed: 'message.body' ] ")
     mtx.acquire()
     model.stop()
     mtx.release()
@@ -132,11 +138,27 @@ def _pause_(message:tcp.Message=None)->None:
 
 running = True
 
+def get_cell_locations(message:tcp.Message=None)->json_cpp.JsonList:
+    print("get_cell_locations")
+    mtx.acquire()
+    locations = model.loader.world.implementation.cell_locations
+    mtx.release()
+    return locations
+
+def get_occlusions(message:tcp.Message=None)->json_cpp.JsonList:
+    print("get_occlusions")
+    mtx.acquire()
+    occlusions = model.loader.world.cells.occluded_cells()
+    mtx.release()
+    return occlusions
+
 server.router.add_route("reset", reset)
 server.router.add_route("prey_step", move_mouse)
 server.router.add_route("stop", _stop_)
 server.router.add_route("pause", _pause_)
 server.router.add_route("close", _close_)
+server.router.add_route("get_cell_locations", get_cell_locations)
+server.router.add_route("get_occlusions", get_occlusions)
 
 server.router.unrouted_message = on_unrouted
 server.failed_messages = "failed"
@@ -146,7 +168,6 @@ server.start(PORT)
 server.on_new_connection = on_connection
 
 print(f"server started {server.running} (allow subscription: {server.allow_subscription})")
-print(f"connections: {len(server.connections)}")
 
 # #todo: check if this creates misalignment
 # print("- Init reset")
