@@ -4,6 +4,8 @@ import cellworld as cw
 import time
 import numpy as np
 from PolygonLib import PolygonHab
+
+
 print("creating client")
 client = tcp.MessageClient()
 client.connect(ip='192.168.1.199', port=4791)
@@ -76,6 +78,7 @@ fs = 60 # 90 Hz
 T = 1/fs 
 
 path = PolygonHab().generate_path(N=N, step_size=step_size)
+# path = PolygonHab().generate_path_finish(N=N, step_size=0.1)
 
 print('== starting main loop ==')
 print(f'- fs = {fs} | T = {T:0.4f} | N = {N} | step_size = {step_size}\n')

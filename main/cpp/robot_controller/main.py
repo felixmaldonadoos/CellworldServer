@@ -1,28 +1,12 @@
-print("=== Starting BotEvade Agent Tracking Server ===")
-import os
-import time
-import threading
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-import json_cpp
-import cellworld as cw
-import mylog
-import cellworld_game as game
-import tcp_messages as tcp
+
 import argparse 
-from datetime import datetime
-import threading as th 
-
-mtx = th.Lock()
-
-sample_count_prey = 0
-sample_count_predator = 0
 
 PORT = 4791 
-RENDER = True
+RENDER = False
 FS = 60
 IP = "192.168.1.199"
 
-parser = argparse.ArgumentParser(description='BotEvadeVR: Agent Tracking Server.')
+parser = argparse.ArgumentParser(description='A server that sometimes works, sometimes does not. oh, yea its for BotEvadeVR.')
 parser.add_argument('--ip', type=str, default=IP, help=f'Server host (default: {IP})')
 parser.add_argument('--name','-n', type=str, default=None, help=f'Experiment (subject) name/id (default: {None})')
 parser.add_argument('--port','-p', type=int, default=PORT, help=f'Server port (default: {PORT})')
@@ -34,8 +18,25 @@ args = parser.parse_args()
 ip = args.ip
 port = args.port
 time_step = 1/args.sampling_rate # time step 
-render = True
+render = args.render
 experiment_name = args.name
+
+print("\n=== Starting BotEvade Agent Tracking Server ===")
+import os
+import time
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import json_cpp
+import cellworld as cw
+import mylog
+import cellworld_game as game
+import tcp_messages as tcp
+from datetime import datetime
+import threading as th 
+
+mtx = th.RLock()
+
+sample_count_prey = 0
+sample_count_predator = 0
 
 print(f'Rendering: {render} | time step: {time_step:0.4f} ({args.sampling_rate} Hz)')
 print(f"*** starting server on {ip}:{port} ***\n")
@@ -51,7 +52,11 @@ model = game.BotEvade(world_name="21_05",
                       goal_threshold= -1.0,
                       puff_cool_down_time=3)
 
-def on_capture()->None:
+def on_capture(mdl:game.BotEvade=None)->None:
+    print(f'on_puff called on_capture!')
+    mtx.acquire()
+    model.stop()
+    mtx.release()
     if server: 
         server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
 
@@ -78,13 +83,13 @@ _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_na
 
 model.prey.dynamics.turn_speed = 15 # c.u./s 
 model.prey.dynamics.forward_speed = 15
-# model.add_event_handler("puff", on_capture)
+model.add_event_handler("puff", on_capture) ## new !! 
 
 global server
 server = tcp.MessageServer(ip=ip)
 
 def move_mouse(message:tcp.Message=None):
-    t0 = time.time()
+    # t0 = time.time()
     step: cw.Step = message.get_body(body_type=cw.Step)
     if step is None:
         print("step is none")
@@ -94,17 +99,16 @@ def move_mouse(message:tcp.Message=None):
     model.prey.state.direction = step.rotation*(-1) # reverse rotation idk but it works 
     model.time = step.time_stamp
     mtx.release()
-    # threading.Thread(target=save_step, args=(step.time_stamp, step.frame,)).start()
-    print(time.time() - t0)
+    print(f'frame: {step.frame}')
+    # print(time.time() - t0)
     save_step(step.time_stamp, step.frame) 
-    # sample_count_prey += 1
 
 def get_predator_step(message:tcp.Message=None):
     predator_step = cw.Step(agent_name="predator")
     predator_step.location = cw.Location(*model.predator.state.location)
     return predator_step
 
-def reset(message:tcp.Message=None):
+def reset(message):
     print(f"# reset called #")
     mtx.acquire()
     model.reset()
@@ -140,7 +144,6 @@ def _pause_(message:tcp.Message=None)->None:
     model.pause()
     mtx.release()
 
-
 def get_cell_locations(message:tcp.Message=None)->json_cpp.JsonList:
     print("[ get_cell_locations ]")
     mtx.acquire()
@@ -175,25 +178,17 @@ server.start(PORT)
 
 print(f"Starting server (allow subscription: {server.allow_subscription})")
 print(f'Routes: {server.router.routes.keys()}')
-
+print(f'Subscribers: {server.subscriptions}')
 while running:
-    # t01 = time.time()
     if not model.running: 
         time.sleep(model.time_step)
-        # print(f' not running: {time.time() - t01}')
         continue
     mtx.acquire()
-    if model.prey_data.puff_count > 0: 
-        print("[ Episode Finished: Captured by Predator ] ")
-        model.stop()
-        on_capture()
-    else:
-        model.step()
-        predator_step = cw.Step(agent_name="predator")
-        predator_step.location = cw.Location(*model.predator.state.location)
-        predator_step.rotation = model.predator.state.direction
-        server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
+    model.step()
+    predator_step = cw.Step(agent_name="predator")
+    predator_step.location = cw.Location(*model.predator.state.location)
+    predator_step.rotation = model.predator.state.direction
     mtx.release()
-    # print(f' running: {time.time() - t01}')
+    server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
 
 print("done!")
