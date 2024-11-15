@@ -12,7 +12,7 @@ import argparse
 from datetime import datetime
 import threading as th 
 
-mtx = th.Lock()
+mtx = th.RLock()
 
 sample_count_prey = 0
 sample_count_predator = 0
@@ -51,8 +51,13 @@ model = game.BotEvade(world_name="21_05",
                       goal_threshold= -1.0,
                       puff_cool_down_time=3)
 
-def on_capture()->None:
-    if server: 
+def on_capture(mdl:game.BotEvade=None)->None:
+    print(f'on_puff called on_capture!')
+    mtx.acquire()
+    model.stop()
+    mtx.release()
+    if server:
+        print(server.subscriptions) 
         server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
 
 def generate_experiment_name(basename:str = "ExperimentNameBase"):
@@ -78,13 +83,13 @@ _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_na
 
 model.prey.dynamics.turn_speed = 15 # c.u./s 
 model.prey.dynamics.forward_speed = 15
-# model.add_event_handler("puff", on_capture)
+model.add_event_handler("puff", on_capture) ## new !! 
 
 global server
 server = tcp.MessageServer(ip=ip)
 
 def move_mouse(message:tcp.Message=None):
-    t0 = time.time()
+    # t0 = time.time()
     step: cw.Step = message.get_body(body_type=cw.Step)
     if step is None:
         print("step is none")
@@ -94,8 +99,9 @@ def move_mouse(message:tcp.Message=None):
     model.prey.state.direction = step.rotation*(-1) # reverse rotation idk but it works 
     model.time = step.time_stamp
     mtx.release()
+    print(f'frame: {step.frame}')
     # threading.Thread(target=save_step, args=(step.time_stamp, step.frame,)).start()
-    print(time.time() - t0)
+    # print(time.time() - t0)
     save_step(step.time_stamp, step.frame) 
     # sample_count_prey += 1
 
@@ -106,7 +112,9 @@ def get_predator_step(message:tcp.Message=None):
 
 def reset(message:tcp.Message=None):
     print(f"# reset called #")
-    mtx.acquire()
+    if not mtx.acquire(timeout=3): 
+        print("failed to acquire mtx resources ")
+        return 'failed'
     model.reset()
     mtx.release()
     print(f"[ New Episode Started ]")
@@ -139,7 +147,6 @@ def _pause_(message:tcp.Message=None)->None:
     mtx.acquire()
     model.pause()
     mtx.release()
-
 
 def get_cell_locations(message:tcp.Message=None)->json_cpp.JsonList:
     print("[ get_cell_locations ]")
@@ -175,25 +182,20 @@ server.start(PORT)
 
 print(f"Starting server (allow subscription: {server.allow_subscription})")
 print(f'Routes: {server.router.routes.keys()}')
-
+print(f'Subscribers: {server.subscriptions}')
 while running:
-    # t01 = time.time()
     if not model.running: 
         time.sleep(model.time_step)
-        # print(f' not running: {time.time() - t01}')
         continue
+    ### ** issue is here
+    # what i did was add event dispatcher instead of doing it manually in the loop 
     mtx.acquire()
-    if model.prey_data.puff_count > 0: 
-        print("[ Episode Finished: Captured by Predator ] ")
-        model.stop()
-        on_capture()
-    else:
-        model.step()
-        predator_step = cw.Step(agent_name="predator")
-        predator_step.location = cw.Location(*model.predator.state.location)
-        predator_step.rotation = model.predator.state.direction
-        server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
+    model.step()
+    predator_step = cw.Step(agent_name="predator")
+    predator_step.location = cw.Location(*model.predator.state.location)
+    predator_step.rotation = model.predator.state.direction
     mtx.release()
-    # print(f' running: {time.time() - t01}')
-
+    ## ** issue ends here 
+    server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
+    # print(len(server.subscriptions))
 print("done!")
