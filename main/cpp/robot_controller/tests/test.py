@@ -5,7 +5,6 @@ import time
 import numpy as np
 from PolygonLib import PolygonHab
 
-
 print("creating client")
 client = tcp.MessageClient()
 client.connect(ip='192.168.1.199', port=4791)
