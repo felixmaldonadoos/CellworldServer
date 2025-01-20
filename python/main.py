@@ -53,11 +53,10 @@ model = game.BotEvade(world_name="21_05",
                       puff_cool_down_time=3)
 
 def on_capture(mdl:game.BotEvade=None)->None:
-    print(f'on_puff called on_capture!')
-    print("SUPRESSED TO STRESS TEST")
-    return
+    print(f'[on capture]')
     mtx.acquire()
     model.stop()
+    print('[on capture] Finished episode.')
     mtx.release()
     if server: 
         server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
@@ -101,7 +100,7 @@ def move_mouse(message:tcp.Message=None):
     model.prey.state.direction = step.rotation*(-1) # reverse rotation idk but it works 
     model.time = step.time_stamp
     mtx.release()
-    print(f'frame: {step.frame} location: ({step.location.x:0.2f},{step.location.y:0.2f}), rotation: {step.rotation:0.2f}')
+    # print(f'frame: {step.frame} location: ({step.location.x:0.2f},{step.location.y:0.2f}), rotation: {step.rotation:0.2f}')
     # print(time.time() - t0)
     save_step(step.time_stamp, step.frame) 
 
