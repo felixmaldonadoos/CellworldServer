@@ -1,4 +1,3 @@
-
 import argparse 
 
 PORT = 4791 
@@ -49,17 +48,21 @@ model = game.BotEvade(world_name="21_05",
                       render=render,
                       time_step=time_step, 
                       real_time=True, 
-                      goal_threshold= -1.0,
+                      goal_threshold= -1,
                       puff_cool_down_time=3)
 
 def on_capture(mdl:game.BotEvade=None)->None:
-    print(f'[on capture]')
+    print(f'[on capture] suppressed')
     mtx.acquire()
     model.stop()
-    print('[on capture] Finished episode.')
+    print('[on capture] Called model.stop()')
+    print('TODO: BROADCAST WITH MESSAGE THAT SAYS `CAPTURED` | `REACHED_GOAL`')
     mtx.release()
     if server: 
         server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
+
+def on_episode_stopped(mdl:game.BotEvade=None)->None:
+    print(['on_episode_stopped'])
 
 def generate_experiment_name(basename:str = "ExperimentNameBase"):
     current_time = datetime.now()
@@ -85,23 +88,20 @@ _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_na
 model.prey.dynamics.turn_speed = 15 # c.u./s 
 model.prey.dynamics.forward_speed = 15
 model.add_event_handler("puff", on_capture) ## new !! 
+model.add_event_handler("after_stop", on_episode_stopped) ## new !! 
 
 global server
 server = tcp.MessageServer(ip=ip)
 
 def move_mouse(message:tcp.Message=None):
-    # t0 = time.time()
     step: cw.Step = message.get_body(body_type=cw.Step)
     if step is None:
-        print("step is none")
         return
     mtx.acquire()
     model.prey.state.location = (step.location.x, step.location.y)
     model.prey.state.direction = step.rotation*(-1) # reverse rotation idk but it works 
     model.time = step.time_stamp
     mtx.release()
-    # print(f'frame: {step.frame} location: ({step.location.x:0.2f},{step.location.y:0.2f}), rotation: {step.rotation:0.2f}')
-    # print(time.time() - t0)
     save_step(step.time_stamp, step.frame) 
 
 def get_predator_step(message:tcp.Message=None):
@@ -176,7 +176,6 @@ running = True
 
 server.allow_subscription = True
 server.start(PORT)
-
 print(f"Starting server (allow subscription: {server.allow_subscription})")
 print(f'Routes: {server.router.routes.keys()}')
 print(f'Subscribers: {server.subscriptions}')
