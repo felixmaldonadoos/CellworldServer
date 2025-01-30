@@ -5,6 +5,8 @@ RENDER = False
 FS = 60
 IP = "192.168.1.199"
 
+# user input when calling function in cmd line 
+## example: python main.py --ip 127.0.0.1
 parser = argparse.ArgumentParser(description='A server that sometimes works, sometimes does not. oh, yea its for BotEvadeVR.')
 parser.add_argument('--ip', type=str, default=IP, help=f'Server host (default: {IP})')
 parser.add_argument('--name','-n', type=str, default=None, help=f'Experiment (subject) name/id (default: {None})')
@@ -34,9 +36,6 @@ import threading as th
 
 mtx = th.RLock()
 
-sample_count_prey = 0
-sample_count_predator = 0
-
 print(f'Rendering: {render} | time step: {time_step:0.4f} ({args.sampling_rate} Hz)')
 print(f"*** starting server on {ip}:{port} ***\n")
 
@@ -48,7 +47,7 @@ model = game.BotEvade(world_name="21_05",
                       render=render,
                       time_step=time_step, 
                       real_time=True, 
-                      goal_threshold= -1,
+                      goal_threshold= -1 ,
                       puff_cool_down_time=3)
 
 def on_capture(mdl:game.BotEvade=None)->None:
