@@ -7,7 +7,7 @@ from PolygonLib import PolygonHab
 
 print("creating client")
 client = tcp.MessageClient()
-client.connect(ip='192.168.1.199', port=4791)
+client.connect(ip='127.0.0.1', port=4791)
 
 def myprint(msg):
     print(f'Unrouted: {msg}')
@@ -73,7 +73,7 @@ def reset_and_stop_once(client):
 # create path to evaluate 
 N = 1000
 step_size = 0.01
-fs = 60 # 90 Hz
+fs = 30 # 90 Hz
 T = 1/fs 
 
 path = PolygonHab().generate_path(N=N, step_size=step_size)

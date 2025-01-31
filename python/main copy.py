@@ -40,6 +40,8 @@ print(f'Rendering: {render} | time step: {time_step:0.4f} ({args.sampling_rate} 
 print(f"*** starting server on {ip}:{port} ***\n")
 
 ## load world and model 
+
+# todo: to be classed ====== vr_options.py
 loader = game.CellWorldLoader(world_name="21_05") # original: "21_05"
 global model
 
@@ -81,10 +83,12 @@ def get_valid_input(prompt):
 if experiment_name is None:
     experiment_name = get_valid_input("Enter your name (only letters, no symbols or numbers): ")
 
-experiment_name = generate_experiment_name(experiment_name)
+experiment_name = generate_experiment_name(experiment_name) # add to options
 
 _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_name=experiment_name, 
     log_folder='logs/', save_checkpoint=True)
+
+
 
 model.prey.dynamics.turn_speed = 15 # c.u./s 
 model.prey.dynamics.forward_speed = 15
@@ -94,6 +98,7 @@ model.add_event_handler("after_stop", on_episode_stopped) ## new !!
 global server
 server = tcp.MessageServer(ip=ip)
 
+# add to model (message, does not return anything) 
 def move_mouse(message:tcp.Message=None):
     step: cw.Step = message.get_body(body_type=cw.Step)
     if step is None:
@@ -110,7 +115,10 @@ def get_predator_step(message:tcp.Message=None):
     predator_step.location = cw.Location(*model.predator.state.location)
     return predator_step
 
-def reset(message):
+# if a server.route returns a value (string), it is considered a "request"
+# if a server.route does NOT return a value (string), we call it a "message"
+def reset(message:tcp.Message=None):
+    if not message: return 'failed'
     print(f"# reset called #")
     mtx.acquire()
     model.reset()
@@ -160,7 +168,7 @@ def get_occlusions(message:tcp.Message=None)->json_cpp.JsonList:
     mtx.release()
     return occlusions
 
-## routes ##
+## routes ## add to vr_server.py
 server.router.add_route("reset", reset)
 server.router.add_route("prey_step", move_mouse)
 server.router.add_route("stop", _stop_)
@@ -175,8 +183,8 @@ server.on_new_connection = on_connection
 
 running = True
 
-server.allow_subscription = True
-server.start(PORT)
+server.allow_subscription = True # server 
+server.start(PORT) # server 
 print(f"Starting server (allow subscription: {server.allow_subscription})")
 print(f'Routes: {server.router.routes.keys()}')
 print(f'Subscribers: {server.subscriptions}')
@@ -193,3 +201,5 @@ while running:
     server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
 
 print("done!")
+
+
