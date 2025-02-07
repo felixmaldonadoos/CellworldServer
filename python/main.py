@@ -25,6 +25,7 @@ experiment_name = args.name
 print("\n=== Starting BotEvade Agent Tracking Server ===")
 import os
 import time
+import math
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import json_cpp
 import cellworld as cw
@@ -48,7 +49,7 @@ model = game.BotEvade(world_name="21_05",
                       time_step=time_step, 
                       real_time=True, 
                       goal_threshold= 0.05 ,
-                      puff_cool_down_time=3)
+                      puff_cool_down_time=3,)
 
 def on_capture(mdl:game.BotEvade=None)->None:
     print(f'[on capture] suppressed')
@@ -99,7 +100,7 @@ def move_mouse(message:tcp.Message=None):
     if step is None:
         return
     mtx.acquire()
-    model.prey.state.location = (step.location.x, step.location.y)
+    model.prey.state.location = (step.location.x, step.location.y) 
     model.prey.state.direction = step.rotation*(-1) # reverse rotation idk but it works 
     model.time = step.time_stamp
     mtx.release()
