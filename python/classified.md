@@ -19,3 +19,10 @@ server.router.add_route("get_occlusions", get_occlusions)
 ```
 
 - if you can, convert messages to requests from main.py
+
+start and stop experiment, set up all routes like get cell locations and print out cell locations
+either cell loc or occlusoins will print index or lists-- figure out which is which
+
+reset = start
+if get captures stop
+restart again and loop

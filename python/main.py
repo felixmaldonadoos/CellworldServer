@@ -162,10 +162,10 @@ def get_occlusions(message:tcp.Message=None)->json_cpp.JsonList:
 
 ## routes ##
 server.router.add_route("reset", reset)
-server.router.add_route("prey_step", move_mouse)
-server.router.add_route("stop", _stop_)
-server.router.add_route("pause", _pause_)
-server.router.add_route("close", _close_)
+server.router.add_route("prey_step", move_mouse) #
+server.router.add_route("stop", _stop_) # stops episode
+server.router.add_route("pause", _pause_) # Y
+server.router.add_route("close", _close_) # stops server X
 server.router.add_route("get_cell_locations", get_cell_locations)
 server.router.add_route("get_occlusions", get_occlusions)
 server.router.unrouted_message = on_unrouted
@@ -193,3 +193,4 @@ while running:
     server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
 
 print("done!")
+
