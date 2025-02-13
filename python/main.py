@@ -3,7 +3,7 @@ import argparse
 PORT = 4791 
 RENDER = False
 FS = 60
-IP = "192.168.1.199"
+IP = "192.168.1.5" # new static ip
 
 # user input when calling function in cmd line 
 ## example: python main.py --ip 127.0.0.1
@@ -29,7 +29,7 @@ import math
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import json_cpp
 import cellworld as cw
-import mylog
+from tools import mylog
 import cellworld_game as game
 import tcp_messages as tcp
 from datetime import datetime
