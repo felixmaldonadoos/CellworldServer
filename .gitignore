@@ -9,10 +9,28 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
-
+**/__pycache__/
+**/.idea/
 # build files 
-build/
-
+**/build/
+**/logs/*
+.cellworld_cache/
+perf_report.html
 # ignore all .json files in the "/logs/" directory
-logs/*.log
-logs/*.json
+**/logs/*.log
+**/logs/*.json
+**/cmake-build-debug/
+**/cmake/
+**/git-dependencies/
+**/build/
+**/logs/*
+**/venvrobot/
+**/venv/
+**/cmake
+# ignore all .json files in the "/logs/" directory
+**/logs/*.log
+**/logs/*.json
+
+/.idea/
+
+**/*.7zip
