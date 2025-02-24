@@ -34,6 +34,8 @@ import cellworld_game as game
 import tcp_messages as tcp
 from datetime import datetime
 import threading as th 
+import pavtest as pavlok
+import asyncio
 
 mtx = th.RLock()
 
@@ -58,8 +60,16 @@ def on_capture(mdl:game.BotEvade=None)->None:
     print('[on capture] Called model.stop()')
     print('TODO: BROADCAST WITH MESSAGE THAT SAYS `CAPTURED` | `REACHED_GOAL`')
     mtx.release()
+    try: 
+        print('[on_capture] Sending vibe stimulus')
+        pav = pavlok.PyStimTester(stims='vibe', 
+                     intensities=[100])
+        asyncio.run(pav.start(show_output=False))
+    except Exception as e:
+        print(f"[on_capture] Error: {e}")
     if server: 
         server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
+    
 
 def on_episode_stopped(mdl:game.BotEvade=None)->None:
     print('[on_episode_stopped] Sending `on_capture` message (temporary)')
@@ -117,6 +127,14 @@ def reset(message):
     model.reset()
     mtx.release()
     print(f"[ New Episode Started ]")
+    try: 
+        print('[reset] Sending vibe stimulus')
+        pav = pavlok.PyStimTester(stims='vibe', 
+                     intensities=[100])
+        asyncio.run(pav.start(show_output=False))
+    except Exception as e:
+        print(f"[reset] Error: {e}")
+
     return 'success'
 
 def _close_():
@@ -134,6 +152,9 @@ def _stop_(message:tcp.Message=None):
 
 def on_connection(connection=None)->None:
     print(f"connected: {connection}")
+    pav = pavlok.PyStimTester(stims='vibe',
+                     intensities=[100])
+    asyncio.run(pav.start(show_output=False))
 
 def on_unrouted(message:tcp.Message=None)->None:
     if message in None:
