@@ -18,17 +18,21 @@ server.router.add_route("get_cell_locations", get_cell_locations) # ret json_cpp
 server.router.add_route("get_occlusions", get_occlusions)
 ```
 
-- if you can, convert messages to requests from main.py
-
-start and stop experiment, set up all routes like get cell locations and print out cell locations
-either cell loc or occlusoins will print index or lists-- figure out which is which
-
-reset = start
-if get captures stop
-restart again and loop
-
 2/20-- 
-- Test all messages and if they are properly routed. 
-- Add any other routes if they're missing from main.py (and add them to client)
-- Maybe after I add all my routes I can try turning my while True to a function that does it automatically:
-- manually send messages vs automatically send messages
+- Test all messages and if they are properly routed. -- Done
+- Add any other routes if they're missing from main.py (and add them to client) -- Done for now... I think
+- Maybe after I add all my routes I can try turning my while True to a function that does it automatically-- Haven't done yet
+- manually send messages vs automatically send messages-- Also haven't done yet
+
+2/26-- 
+- change my laptop IP address and make it a static IP address while connected to eduroam
+  - tip: use ping-- command but more of a action-- how to ping a port
+- Current issues: I can't reset more than once (manually)
+  - Figure out why this issue is happening
+  - Fix it.
+  - Try to do it so messages are automatically sent
+- By friday I want my computer running experiments so current issues don't need to be fixed just yet, can be a 
+- last minute thing to fix tomorrow night before friday experiments
+
+
+
