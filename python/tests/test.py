@@ -70,6 +70,7 @@ def reset_and_stop_once(client):
     print('[reset_and_stop_once] sending reset 1')
     client.send_message(tcp.Message(header='reset',body=''))
 
+
 # create path to evaluate 
 N = 1000
 step_size = 0.01

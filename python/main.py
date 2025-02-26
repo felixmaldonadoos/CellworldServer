@@ -3,13 +3,13 @@ import argparse
 PORT = 4791 
 RENDER = False
 FS = 60
-IP = "192.168.1.199"
+IP = "127.0.0.1"
 
 # user input when calling function in cmd line 
 ## example: python main.py --ip 127.0.0.1
 parser = argparse.ArgumentParser(description='A server that sometimes works, sometimes does not. oh, yea its for BotEvadeVR.')
 parser.add_argument('--ip', type=str, default=IP, help=f'Server host (default: {IP})')
-parser.add_argument('--name','-n', type=str, default=None, help=f'Experiment (subject) name/id (default: {None})')
+parser.add_argument('--name','-n', type=str, default='None', help=f'Experiment (subject) name/id (default: {None})')
 parser.add_argument('--port','-p', type=int, default=PORT, help=f'Server port (default: {PORT})')
 parser.add_argument('--sampling_rate','-fs', type=float, default=FS, help=f'Sampling rate (default: {FS})')
 parser.add_argument('--render', '-r', action='store_true', help=f'Enable rendering (default: {RENDER})')

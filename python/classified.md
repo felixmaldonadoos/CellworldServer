@@ -26,3 +26,9 @@ either cell loc or occlusoins will print index or lists-- figure out which is wh
 reset = start
 if get captures stop
 restart again and loop
+
+2/20-- 
+- Test all messages and if they are properly routed. 
+- Add any other routes if they're missing from main.py (and add them to client)
+- Maybe after I add all my routes I can try turning my while True to a function that does it automatically:
+- manually send messages vs automatically send messages

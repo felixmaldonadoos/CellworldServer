@@ -2,6 +2,7 @@ import tcp_messages as tcp
 import cellworld as cw
 import time
 
+
 print("starting")
 
 print("creating client")
@@ -19,41 +20,55 @@ step_size = 1 / fs
 print(f'Subscription response: {client.subscribe()}')  # subscribe = " i want to listen to subscriptions msgs "
 print('Sending: Initial reset')
 
-if client.send_message(tcp.Message(header='start', body='')):
-    print("Sent reset OK")
+# if client.send_message(tcp.Message(header='reset', body='')):
+#     print("Sent reset OK")
 
 i = 0
 t0 = time.time()
 print('== starting main loop ==')
 
-for i in range(1000):
-    tnow = time.time() - t0
-    x,y = 0.5,0.5
-    msg = tcp.Message(header="prey_step", body=cw.Step(location=cw.Location(x, y), time_stamp=tnow, frame=i))  # 0,1
-    client.send_message(msg)
-    print(f'frame sent: {i}')
-    time.sleep(0.2)
-
-    if i % 100 == 0:
-        print(f'requesting cell location')
-        client.send_message(tcp.Message(header="get_cell_location", body=cw.Step(location=cw.Location(x, y), time_stamp=tnow, frame=i)))
-
-        print("Requesting cell location")
-        client.send_message(tcp.Message(header="get_occlusions", body=cw.Step(location=cw.Location(x, y), time_stamp=tnow, frame=i)))
-
-    if i % 200 == 0:
-        print("Testing reset")
-        client.send_message(tcp.Message(header="reset", body=''))
 
 
-print("done")
 
-# def test_unrouted():
-#     # create client
-#     # connect
-#     # send message to unroated route (i.e. did not do server.router.addroute("header")
-#     return None
-#
-# def test_request():
-#
-#     # request = a message where the serverside callback returns a string
+# tnow = time.time() - t0
+# x,y = 0.5,0.5
+# if client.send_message(tcp.Message(header="prey_step", body=cw.Step(location=cw.Location(x, y), time_stamp=tnow, frame=i))):
+#     print("Sent prey step")
+
+msg_on_capture = tcp.Message(header="on_capture", body='')
+
+all_msgs = [
+    [tcp.Message(header="prey_step", body=cw.Step(location=cw.Location(0.5, 0.5), time_stamp=0, frame=0)), 0],
+    [tcp.Message(header="get_occlusions", body=''), 1],
+    [tcp.Message(header="get_cell_location", body=''), 1],
+    [tcp.Message(header="reset_model", body=''), 1],
+    [tcp.Message(header="stop_model", body=''), 1]
+]
+
+def show_options(msgs:list=None):
+    print('=== select what to send next ===')
+    for i in range(len(msgs)):
+        if type(msgs[i][0]) != tcp.Message: raise ValueError(f'Incorrect type! {type(msgs[i][0])}')
+        print(f'{i}) {msgs[i][0].header} | {msgs[i][1]}')
+
+user_input = None
+while True:
+    show_options(all_msgs)
+    user_input = input('> ')
+    if user_input == 'q':
+        exit(0)
+
+    msg = all_msgs[int(user_input)][0]       # tcp.Message
+    msg_type = all_msgs[int(user_input)][1]  # 0 = msg | 1 = request
+
+    if msg_type == 0:
+        client.send_message(msg)
+        print('sending msg type')
+        continue
+
+    print(msg.header)
+    resp = client.send_request(msg, timeout=10)
+    if resp:
+        print(f'Received response: {resp}')
+    else:
+        print('Sent ERROR')
