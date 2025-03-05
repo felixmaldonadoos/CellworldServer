@@ -2,7 +2,6 @@ import tcp_messages as tcp
 import cellworld as cw
 import time
 
-
 print("starting")
 
 print("creating client")
@@ -20,20 +19,9 @@ step_size = 1 / fs
 print(f'Subscription response: {client.subscribe()}')  # subscribe = " i want to listen to subscriptions msgs "
 print('Sending: Initial reset')
 
-# if client.send_message(tcp.Message(header='reset', body='')):
-#     print("Sent reset OK")
-
 i = 0
 t0 = time.time()
 print('== starting main loop ==')
-
-
-
-
-# tnow = time.time() - t0
-# x,y = 0.5,0.5
-# if client.send_message(tcp.Message(header="prey_step", body=cw.Step(location=cw.Location(x, y), time_stamp=tnow, frame=i))):
-#     print("Sent prey step")
 
 msg_on_capture = tcp.Message(header="on_capture", body='')
 
@@ -67,8 +55,12 @@ while True:
         continue
 
     print(msg.header)
-    resp = client.send_request(msg, timeout=10)
+    resp = client.send_request(msg, timeout=5)
     if resp:
         print(f'Received response: {resp}')
     else:
         print('Sent ERROR')
+
+#create stress tests
+#create class called stress tests
+#

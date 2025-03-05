@@ -35,6 +35,9 @@ class VRServer(tcp.MessageServer):
     def reset(self, message:tcp.Message=None):
         print("[Experiment] Starting a new experiment")
         mtx.acquire()
+        if self.model.running:
+            self.model.stop()
+            self.model.reset()
         self.model.reset()
         mtx.release()
         return 'success'
