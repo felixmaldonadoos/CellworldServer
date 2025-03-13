@@ -50,7 +50,7 @@ def on_capture(mdl:game.BotEvade=None)->None:
     print('[on capture] Called model.stop()')
     print('TODO: BROADCAST WITH MESSAGE THAT SAYS `CAPTURED` | `REACHED_GOAL`')
     mtx.release()
-    
+
     if experiment_options.shock:
         try: 
             print('[on_capture] Sending vibe stimulus')
@@ -187,7 +187,7 @@ while running:
     predator_step.location = cw.Location(*model.predator.state.location)
     predator_step.rotation = model.predator.state.direction
     mtx.release()
-    predator_step.rotation = (predator_step.rotation - 180) * -1
+    predator_step.rotation = (predator_step.rotation +180) * -1
     server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
 
 print("done!")
