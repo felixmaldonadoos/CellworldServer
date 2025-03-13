@@ -38,7 +38,6 @@ import pavtest as pavlok
 import asyncio
 
 mtx = th.RLock()
-
 print(f'Rendering: {render} | time step: {time_step:0.4f} ({args.sampling_rate} Hz)')
 print(f"*** starting server on {ip}:{port} ***\n")
 
@@ -60,16 +59,15 @@ def on_capture(mdl:game.BotEvade=None)->None:
     print('[on capture] Called model.stop()')
     print('TODO: BROADCAST WITH MESSAGE THAT SAYS `CAPTURED` | `REACHED_GOAL`')
     mtx.release()
-    try: 
-        print('[on_capture] Sending vibe stimulus')
-        pav = pavlok.PyStimTester(stims='vibe', 
-                     intensities=[100])
-        asyncio.run(pav.start(show_output=False))
-    except Exception as e:
-        print(f"[on_capture] Error: {e}")
-    if server: 
-        server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
-    
+    # try: 
+    #     print('[on_capture] Sending vibe stimulus')
+    #     pav = pavlok.PyStimTester(stims='vibe', 
+    #                  intensities=[100])
+    #     asyncio.run(pav.start(show_output=False))
+    # except Exception as e:
+    #     print(f"[on_capture] Error: {e}")
+    # if server: 
+    #     server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
 
 def on_episode_stopped(mdl:game.BotEvade=None)->None:
     print('[on_episode_stopped] Sending `on_capture` message (temporary)')
@@ -127,13 +125,13 @@ def reset(message):
     model.reset()
     mtx.release()
     print(f"[ New Episode Started ]")
-    try: 
-        print('[reset] Sending vibe stimulus')
-        pav = pavlok.PyStimTester(stims='vibe', 
-                     intensities=[100])
-        asyncio.run(pav.start(show_output=False))
-    except Exception as e:
-        print(f"[reset] Error: {e}")
+    # try: 
+    #     print('[reset] Sending vibe stimulus')
+    #     pav = pavlok.PyStimTester(stims='vibe', 
+    #                  intensities=[100])
+    #     asyncio.run(pav.start(show_output=False))
+    # except Exception as e:
+    #     print(f"[reset] Error: {e}")
 
     return 'success'
 
@@ -212,6 +210,7 @@ while running:
     predator_step.location = cw.Location(*model.predator.state.location)
     predator_step.rotation = model.predator.state.direction
     mtx.release()
+    predator_step.rotation = (predator_step.rotation - 180) * -1
     server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
 
 print("done!")
