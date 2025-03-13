@@ -50,6 +50,7 @@ def on_capture(mdl:game.BotEvade=None)->None:
     print('[on capture] Called model.stop()')
     print('TODO: BROADCAST WITH MESSAGE THAT SAYS `CAPTURED` | `REACHED_GOAL`')
     mtx.release()
+    
     if experiment_options.shock:
         try: 
             print('[on_capture] Sending vibe stimulus')
@@ -132,7 +133,7 @@ def on_connection(connection=None)->None:
         asyncio.run(pav.start(show_output=False))
 
 def on_unrouted(message:tcp.Message=None)->None:
-    if message in None:
+    if message is None:
         print('wrong message type') 
         return
     print(f"unrouted: {message.header}")
