@@ -1,26 +1,15 @@
 import argparse 
+from tools.experiment_options import ExperimentArgParse
 
-PORT = 4791 
-RENDER = False
-FS = 60
-IP = "192.168.1.5" # new static ip
+exp_args = ExperimentArgParse()
+experiment_options = exp_args.parse_args()
 
-# user input when calling function in cmd line 
-## example: python main.py --ip 127.0.0.1
-parser = argparse.ArgumentParser(description='A server that sometimes works, sometimes does not. oh, yea its for BotEvadeVR.')
-parser.add_argument('--ip', type=str, default=IP, help=f'Server host (default: {IP})')
-parser.add_argument('--name','-n', type=str, default=None, help=f'Experiment (subject) name/id (default: {None})')
-parser.add_argument('--port','-p', type=int, default=PORT, help=f'Server port (default: {PORT})')
-parser.add_argument('--sampling_rate','-fs', type=float, default=FS, help=f'Sampling rate (default: {FS})')
-parser.add_argument('--render', '-r', action='store_true', help=f'Enable rendering (default: {RENDER})')
-
-args = parser.parse_args()
-
-ip = args.ip
-port = args.port
-time_step = 1/args.sampling_rate # time step 
-render = args.render
-experiment_name = args.name
+# ip = experiment_options.ip
+# port = experiment_options.port
+# time_step = 1 / experiment_options.sampling_rate  # Time step
+# render = experiment_options.render
+# experiment_name = experiment_options.name
+# use_shock = experiment_options.shock
 
 print("\n=== Starting BotEvade Agent Tracking Server ===")
 import os
@@ -37,17 +26,19 @@ import threading as th
 import pavtest as pavlok
 import asyncio
 
+experiment_options.time_step = 1 / experiment_options.sampling_rate
+
 mtx = th.RLock()
-print(f'Rendering: {render} | time step: {time_step:0.4f} ({args.sampling_rate} Hz)')
-print(f"*** starting server on {ip}:{port} ***\n")
+print(f'Rendering: {experiment_options.render} | time step: {experiment_options.time_step:0.4f} ({experiment_options.sampling_rate} Hz)')
+print(f"*** starting server on {experiment_options.ip}:{experiment_options.port} ***\n")
 
 ## load world and model 
 loader = game.CellWorldLoader(world_name="21_05") # original: "21_05"
 global model
 
 model = game.BotEvade(world_name="21_05", 
-                      render=render,
-                      time_step=time_step, 
+                      render=experiment_options.render,
+                      time_step=experiment_options.time_step, 
                       real_time=True, 
                       goal_threshold= 0.05 ,
                       puff_cool_down_time=3,)
@@ -59,40 +50,23 @@ def on_capture(mdl:game.BotEvade=None)->None:
     print('[on capture] Called model.stop()')
     print('TODO: BROADCAST WITH MESSAGE THAT SAYS `CAPTURED` | `REACHED_GOAL`')
     mtx.release()
-    # try: 
-    #     print('[on_capture] Sending vibe stimulus')
-    #     pav = pavlok.PyStimTester(stims='vibe', 
-    #                  intensities=[100])
-    #     asyncio.run(pav.start(show_output=False))
-    # except Exception as e:
-    #     print(f"[on_capture] Error: {e}")
-    # if server: 
-    #     server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
+    if experiment_options.shock:
+        try: 
+            print('[on_capture] Sending vibe stimulus')
+            pav = pavlok.PyStimTester(stims='vibe', 
+                         intensities=[100])
+            asyncio.run(pav.start(show_output=False))
+        except Exception as e:
+            print(f"[on_capture] Error: {e}")
+        if server: 
+            server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
 
 def on_episode_stopped(mdl:game.BotEvade=None)->None:
     print('[on_episode_stopped] Sending `on_capture` message (temporary)')
     if server: 
         server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
 
-def generate_experiment_name(basename:str = "ExperimentNameBase"):
-    current_time = datetime.now()
-    formatted_time = current_time.strftime("%m%d%Y_%H%M%S")
-    return f"{basename}_{formatted_time}"
-
-def get_valid_input(prompt):
-    while True:
-        user_input = input(prompt)
-        if user_input.isalpha():
-            return user_input
-        else:
-            print("Invalid input. Please enter only alphabetic characters.")
-
-if experiment_name is None:
-    experiment_name = get_valid_input("Enter your name (only letters, no symbols or numbers): ")
-
-experiment_name = generate_experiment_name(experiment_name)
-
-_, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_name=experiment_name, 
+_, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_name=experiment_options.name, 
     log_folder='logs/', save_checkpoint=True)
 
 model.prey.dynamics.turn_speed = 15 # c.u./s 
@@ -101,7 +75,7 @@ model.add_event_handler("puff", on_capture) ## new !!
 model.add_event_handler("after_stop", on_episode_stopped) ## new !! 
 
 global server
-server = tcp.MessageServer(ip=ip)
+server = tcp.MessageServer(ip=experiment_options.ip)
 
 def move_mouse(message:tcp.Message=None):
     step: cw.Step = message.get_body(body_type=cw.Step)
@@ -125,13 +99,14 @@ def reset(message):
     model.reset()
     mtx.release()
     print(f"[ New Episode Started ]")
-    # try: 
-    #     print('[reset] Sending vibe stimulus')
-    #     pav = pavlok.PyStimTester(stims='vibe', 
-    #                  intensities=[100])
-    #     asyncio.run(pav.start(show_output=False))
-    # except Exception as e:
-    #     print(f"[reset] Error: {e}")
+    if experiment_options.shock:
+        try: 
+            print('[reset] Sending vibe stimulus')
+            pav = pavlok.PyStimTester(stims='vibe', 
+                         intensities=[100])
+            asyncio.run(pav.start(show_output=False))
+        except Exception as e:
+            print(f"[reset] Error: {e}")
 
     return 'success'
 
@@ -150,9 +125,11 @@ def _stop_(message:tcp.Message=None):
 
 def on_connection(connection=None)->None:
     print(f"connected: {connection}")
-    pav = pavlok.PyStimTester(stims='vibe',
-                     intensities=[100])
-    asyncio.run(pav.start(show_output=False))
+
+    if experiment_options.shock:
+        pav = pavlok.PyStimTester(stims='vibe',
+                        intensities=[100])
+        asyncio.run(pav.start(show_output=False))
 
 def on_unrouted(message:tcp.Message=None)->None:
     if message in None:
@@ -196,9 +173,8 @@ server.on_new_connection = on_connection
 running = True
 
 server.allow_subscription = True
-server.start(PORT)
+server.start(experiment_options.port)
 print(f"Starting server (allow subscription: {server.allow_subscription})")
-print(f'Routes: {server.router.routes.keys()}')
 print(f'Subscribers: {server.subscriptions}')
 while running:
     if not model.running: 
