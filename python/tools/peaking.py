@@ -15,7 +15,7 @@ class PeakingSystem:
         self.max_peak_cooldown = max_peak_cooldown
         self.last_prey_location = None
         self.min_movement_threshold = min_movement_threshold
-        self.detected = False
+        self.is_peaking = False
         self._initialize_cells_()
 
     def _initialize_cells_(self):

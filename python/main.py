@@ -43,7 +43,7 @@ model = game.BotEvade(world_name="21_05",
                       time_step=experiment_options.time_step, 
                       real_time=True, 
                       goal_threshold= 0.05 ,
-                      puff_cool_down_time=3,)
+                      puff_cool_down_time=3)
 
 def on_capture(mdl:game.BotEvade=None)->None:
     print(f'[on capture] suppressed')
@@ -207,7 +207,7 @@ for cell in occluded_cells:
     cell.peak_cooldown_time_start = 0
 
 peaking_system = PeakingSystem(occluded_cells=model.loader.world.cells.occluded_cells().copy())
-
+model.peaking_system = peaking_system
 while running:
     if not model.running: 
         time.sleep(model.time_step)
@@ -228,9 +228,7 @@ while running:
     predator_step = cw.Step(agent_name="predator")
     predator_step.location = cw.Location(*model.predator.state.location)
 
-    peaking_system.update(model.prey.state.location)
-    if peaking_system.is_peaking:
-        print(f'{1/(time.time() - t0):0.2f}')
+    model.peaking_system.update(model.prey.state.location)
     # print(f'Is player peaking? {peaking_system.is_peaking}')
 
     predator_step.rotation = model.predator.state.direction
