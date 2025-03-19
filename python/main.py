@@ -26,7 +26,7 @@ import threading as th
 import pavtest as pavlok
 import asyncio
 from tools.controller_mouse import get_mouse_position
-from tools.peaking import Peak
+from tools.peaking import PeakingSystem
 
 experiment_options.time_step = 1 / experiment_options.sampling_rate
 
@@ -206,6 +206,8 @@ for cell in occluded_cells:
     cell.peak_cooldown_time_elapsed = 0
     cell.peak_cooldown_time_start = 0
 
+peaking_system = PeakingSystem(occluded_cells=model.loader.world.cells.occluded_cells().copy())
+
 while running:
     if not model.running: 
         time.sleep(model.time_step)
@@ -214,6 +216,7 @@ while running:
             print(f'Starting episode in {t} seconds...')
             model.reset()
         continue
+    t0 = time.time()
     mtx.acquire()
     if experiment_options.pcmouse and experiment_options.render: 
         sx,sy = model.view.screen.get_size()
@@ -222,58 +225,17 @@ while running:
         move_mouse(mouse_step)
 
     model.step()
-    # print(sys.getsizeof(model.loader.world.cells.occluded_cells())) # 392
-    # print(sys.getsizeof(model.loader.world.cells.occluded_cells()[0])) #48
     predator_step = cw.Step(agent_name="predator")
     predator_step.location = cw.Location(*model.predator.state.location)
 
-    ### START NEW FUNCTION ###
-    for cell in occluded_cells:
-        # print(cell.peaking)
-        cell.distance = use_float16_list([model.prey.state.location[0], model.prey.state.location[1]],
-                                    [cell.location.x, cell.location.y])
-        
-        if cell.distance <= abs(max_peak_distance):
-            if not cell.in_peak_cooldown:
-                # print(f'in peak area, distance: {cell.distance} | peaking: {cell.peaking} | cell: {cell['id']}')
-                
-                if not cell.peaking: # start peak counters 
-                    cell.peak_time_start = time.time()
-                    cell.peaking = True
-                    print(f'STARTED peaking! cell {cell.id} | distance: {cell.distance}')
-                
-                elif cell.peaking: # tick thru active peak
-                    cell.peak_time_elapsed = time.time() - cell.peak_time_start
-                    if cell.peak_time_elapsed >= max_peak_time: 
-                        print(f'peak time elapsed! Starting cooldown. | {cell.id}')
-                        cell.peaking = False
-                        cell.in_peak_cooldown = True
-                        cell.peak_cooldown_time_start = time.time()
-                    else: # in active peak
-                        print(f'In an active peak! {cell.id} | {cell.peak_time_elapsed:0.2f}')
-                        continue
-            else: # in peak cooldown 
-                cell.peak_cooldown_time_elapsed = time.time() - cell.peak_cooldown_time_start
-                # print(f'In peak cooldown: peak cooldown time elapsed {cell.peak_cooldown_time_elapsed:0.2f} (reset time: {cell.max_peak_cooldown_time:0.2f})')
-                if cell.peak_cooldown_time_elapsed >= cell.max_peak_cooldown_time:
-                    cell.in_peak_cooldown           = False
-                    cell.peak_cooldown_time_elapsed = 0
-                    cell.peak_cooldown_time_start   = 0
-                    print(f'ending peak cooldown: {cell.in_peak_cooldown} | {cell.id}')
-        else: 
-            cell.peak_time_elapsed = 0
-            cell.peaking = False
-            if cell.in_peak_cooldown:
-                print(f'left active peak during cooldown period! cooldown time elapsed: {cell.peak_cooldown_time_elapsed:0.2f} | {cell.id} ')
-                cell.in_peak_cooldown = False
-                cell.peak_cooldown_time_elapsed = 0
-                cell.peak_cooldown_time_start   = 0
-
-    ### END NEW FUNCTION ###
+    peaking_system.update(model.prey.state.location)
+    if peaking_system.is_peaking:
+        print(f'{1/(time.time() - t0):0.2f}')
+    # print(f'Is player peaking? {peaking_system.is_peaking}')
 
     predator_step.rotation = model.predator.state.direction
     mtx.release()
     predator_step.rotation = (predator_step.rotation +180) * -1
     server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
-
+    
 print("done!")
