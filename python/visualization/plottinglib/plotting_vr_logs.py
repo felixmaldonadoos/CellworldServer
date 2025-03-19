@@ -14,6 +14,17 @@ import matplotlib.patches as patches
 import cellworld as cw
 # from cellworld import *
 
+import math
+def scale_legacy_y(y):
+    return y * 0.5 * math.sqrt(3) + 0.5 - math.sqrt(3) / 4
+
+def inverse_scale_legacy_y(scaled_y):
+    return (scaled_y - 0.5 + math.sqrt(3) / 4) / (0.5 * math.sqrt(3))
+
+def scale_legacy_x(x):
+    return y * 0.5 * math.sqrt(3) + 0.5 - math.sqrt(3) / 4
+
+
 class ExperimentData:
   def __init__(self, filepath:str=None, data:cw.Experiment=None)->None:
     self.filepath = filepath
@@ -116,7 +127,43 @@ class Plotter():
         print(f"Index not in range!")
         return
         # raise KeyError(f"Index out of range! len(self.experiment_data) = {len(self.experiment_data)}")        
-        
+  
+
+class ExperimentPlot: 
+  def __init__(self):
+    pass 
+
+  def basic_plot(self, filepath:str=None, show_predator:bool=False):
+    if not filepath: raise ValueError('File is NONE!')
+    w = cw.World.get_from_parameters_names('hexagonal',"canonical",'21_05')
+    d = cw.Display(w, fig_size=(12,12), padding=0.1, cell_edge_color="lightgrey", background_color="white", habitat_edge_color="black")
+
+    n     = 0
+    t_sum = 0
+
+    exp = cw.Experiment.load_from_file(filepath)
+
+    # Define hexagonal world bounds
+
+    for idx in range(len(exp.episodes)):
+        episode = exp.episodes[idx]
+        preyt = episode.trajectories.get_agent_trajectory('prey')
+        # prey_scaled_inv = preyt.copy()
+        # prey_scaled = preyt.copy()
+
+        if show_predator:
+          predt = episode.trajectories.get_agent_trajectory('predator')
+          d.add_trajectories(predt, colors = {'predator': 'green'}, alphas = {'predator': .7}, zorder = 7)
+
+        d.add_trajectories(preyt, colors = {'prey': 'red'}, alphas = {'prey': .7}, zorder = 7)
+        # d.add_trajectories(prey_scaled, colors = {'prey': 'red'}, alphas = {'prey': .7}, zorder = 7)
+        # d.add_trajectories(prey_scaled_inv, colors = {'prey': 'green'}, alphas = {'prey': .7}, zorder = 7)
+        if idx == 1: 
+          return
+        # d.add_trajectories(predt, colors = {'predator': 'red'}, alphas = {'predator': .7}, zorder = 7)
+        n+=1 
+        t_sum += len(preyt) * np.diff(preyt.get('time_stamp')).mean()
+
 def plot_experiment(exp_path:str=None, fs:int = 60):
   if exp_path is None: 
     print("No file passed")

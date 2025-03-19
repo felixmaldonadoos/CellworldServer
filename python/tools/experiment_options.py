@@ -20,7 +20,8 @@ class ExperimentArgParse:
             "name": 'default',
             "sampling_rate": 60,
             "render": False,
-            "shock": False
+            "shock": False,
+            "pcmouse": False
         }
         
         self.parser = argparse.ArgumentParser(description="Experiment Argument Parser")
@@ -43,6 +44,9 @@ class ExperimentArgParse:
         
         self.parser.add_argument('--shock','-s', action='store_true', 
                                  help=f'Toggle shock on capture (default: {DEFAULTS['shock']})')
+        
+        self.parser.add_argument('--pcmouse','-pcm', action='store_true', 
+                                help=f'Use PC mouse to emulate mouse position (default: {DEFAULTS['pcmouse']})')
 
     def parse_args(self):
         """Parse command-line arguments and return an ExperimentOptions instance."""
