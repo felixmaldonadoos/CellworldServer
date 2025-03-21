@@ -26,12 +26,11 @@ def _on_capture_(msg:tcp.Message = None):
 
 print("creating client")
 client = tcp.MessageClient()
-if not client.connect(ip='192.168.1.5', port=4791): 
+if not client.connect(ip='192.168.1.2', port=4791): 
     print('failed to connect')
     exit(0)
 else: 
     print('connected')
-
 
 client.router.add_route("prey_step", myprint)
 client.router.add_route("on_capture", _on_capture_)
@@ -39,9 +38,16 @@ client.router.add_route("reset", myprint)
 client.router.add_route("reset_response", _reset_response_)
 client.router.on_unrouted = myprint
 
+input('enter to set vr origin')
+s = f'{0},{0},{0},{1}'
+msg = tcp.Message(header="set_vr_origin", body=s )
+client.send_message(msg)
 while True:
-    msg = tcp.Message(header="reset", body='client_test')
+    # originA = [0,0]
+    # originB = [0,1]
+    msg = tcp.Message(header="prey_step", body=cw.Step(location=(0.5,0.5)))
     if client.send_message(msg):
+        time.sleep(0.1)
         print("sent")
     else:
         print("failed")

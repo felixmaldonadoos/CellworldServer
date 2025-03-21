@@ -19,6 +19,8 @@ class PeakingSystem:
         self._initialize_cells_()
 
     def _initialize_cells_(self):
+        if not self.occluded_cells: 
+            raise ValueError('self.occluded_cells is NONE')
         for cell in self.occluded_cells:
             cell.peaking = False
             cell.distance = 1
