@@ -5,29 +5,22 @@ from tools.vrcoordinateconverter import VRCoordinateConverter
 exp_args = ExperimentArgParse()
 experiment_options = exp_args.parse_args()
 
-# ip = experiment_options.ip
-# port = experiment_options.port
-# time_step = 1 / experiment_options.sampling_rate  # Time step
-# render = experiment_options.render
-# experiment_name = experiment_options.name
-# use_shock = experiment_options.shock
-
 print("\n=== Starting BotEvade Agent Tracking Server ===")
 import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import time
 import math
 import pygame
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import torch
 import json_cpp
 import cellworld as cw
-from tools import mylog
 import cellworld_game as game
 import tcp_messages as tcp
 from datetime import datetime
 import threading as th 
-import pavtest as pavlok
+import tests.pavtest as pavlok
 import asyncio
+from tools import mylog
 from tools.controller_mouse import get_mouse_position
 from tools.peaking import PeakingSystem
 
@@ -44,7 +37,7 @@ global model
 model = game.BotEvade(world_name="21_05", 
                       render=experiment_options.render,
                       time_step=experiment_options.time_step, 
-                      real_time=True, 
+                      real_time=False, 
                       goal_threshold= 0.05 ,
                       puff_cool_down_time=3)
 
@@ -54,7 +47,7 @@ vr_coord_converter = VRCoordinateConverter()
 def on_capture(mdl:game.BotEvade=None)->None:
     mtx.acquire()
     model.stop()
-    print('TODO: BROADCAST WITH MESSAGE THAT SAYS `CAPTURED` | `REACHED_GOAL`')
+    # print('TODO: BROADCAST WITH MESSAGE THAT SAYS `CAPTURED` | `REACHED_GOAL`')
     mtx.release()
     if server: 
         server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
@@ -103,16 +96,16 @@ def scale_legacy_y(y):
 def move_mouse(message:tcp.Message=None):
     mtx.acquire()
     if message is None: return
-    step: cw.Step = message.get_body(body_type=cw.Step)
     if step is None: return
+    step: cw.Step = message.get_body(body_type=cw.Step)
+    print(f'received step: {step}')
+    # if vr_coord_converter:
+    #     converted_coords = vr_coord_converter.vr_to_canonical(step.location.x, step.location.y)
+    #     model.prey.state.location = (converted_coords[0],converted_coords[1])
+    #     print(model.prey.state.location)
 
-    if vr_coord_converter:
-        converted_coords = vr_coord_converter.vr_to_canonical(step.location.x, step.location.y)
-        model.prey.state.location = (converted_coords[0],converted_coords[1])
-        print(model.prey.state.location)
-
-    model.prey.state.direction = step.rotation*(-1) # reverse rotation idk but it works 
-    model.time = step.time_stamp
+    # model.prey.state.direction = step.rotation*(-1) # reverse rotation idk but it works 
+    # model.time = step.time_stamp
 
     mtx.release()
     save_step(step.time_stamp, step.frame) 
@@ -126,7 +119,7 @@ def reset(message):
     mtx.acquire()
     model.reset()
     mtx.release()
-    print(f"[ New Episode Started ]")
+    print(f"[New Episode Started]")
     if experiment_options.shock:
         try: 
             print('[reset] Sending vibe stimulus')
@@ -160,9 +153,7 @@ def on_connection(connection=None)->None:
         asyncio.run(pav.start(show_output=False))
 
 def on_unrouted(message:tcp.Message=None)->None:
-    if message is None:
-        print('wrong message type') 
-        return
+    if message is None: return
     print(f"unrouted: {message.header} | body: {message.body}")
 
 def _pause_(message:tcp.Message=None)->None:
@@ -173,7 +164,6 @@ def _pause_(message:tcp.Message=None)->None:
 
 def set_vr_origin(message:tcp.Message=None)->None:
     # print(f'Setting VR origin (UE units): {message.header} | {message.body}')
-    mtx.acquire()
     origin_lst = message.body.split(',')
     originA = [int(origin_lst[0]), int(origin_lst[1])]
     originB = [int(origin_lst[2]), int(origin_lst[3])]
@@ -181,7 +171,6 @@ def set_vr_origin(message:tcp.Message=None)->None:
     print(f'Set origin: Direction = {vr_coord_converter.origin_transform['direction']}')
     print(f'Set origin: Scale     = {vr_coord_converter.origin_transform['scale']}')
     print('here')
-    mtx.release()
 
 def get_cell_locations(message:tcp.Message=None)->json_cpp.JsonList:
     print("[get_cell_locations]")
@@ -212,7 +201,7 @@ server.router.add_route("pause", _pause_)
 server.router.add_route("close", _close_)
 server.router.add_route("get_cell_locations", get_cell_locations)
 server.router.add_route("get_occlusions", get_occlusions)
-# server.router.add_route("set_vr_origin", set_vr_origin)
+server.router.add_route("set_vr_origin", set_vr_origin)
 server.router.unrouted_message = on_unrouted
 
 server.failed_messages = "failed"
@@ -236,12 +225,10 @@ while running:
     if not model.running: 
         time.sleep(model.time_step)
         if experiment_options.pcmouse and experiment_options.render:
-            print(f'Press any key to start new episode...')
-            input()
-            model.reset()
+            input('Press any key to start new episode...')
+            reset()
         continue
-    t0 = time.time()
-    mtx.acquire()
+
     if experiment_options.pcmouse and experiment_options.render: 
         x,y = pygame.mouse.get_pos()
         mouse_step = tcp.Message(header="", body=cw.Step(location=cw.Location(x,y),
@@ -249,9 +236,10 @@ while running:
                                                         frame=0))
         move_mouse(mouse_step)
 
+    mtx.acquire()
     model.step()
-    model.peaking_system.update(model.prey.state.location)
-    print(f'Is player peaking? {peaking_system.is_peaking}')
+    # model.peaking_system.update(model.prey.state.location)
+    # print(f'Is player peaking? {peaking_system.is_peaking}')
 
     predator_step = cw.Step(agent_name="predator")
     predator_step.location = cw.Location(*model.predator.state.location)

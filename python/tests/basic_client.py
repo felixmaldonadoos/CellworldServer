@@ -40,14 +40,20 @@ client.router.on_unrouted = myprint
 
 input('enter to set vr origin')
 s = f'{0},{0},{0},{1}'
-msg = tcp.Message(header="set_vr_origin", body=s )
+msg = tcp.Message(header="set_vr_origin", body=s)
 client.send_message(msg)
+print('sleeping 2 seconds before sending steps...')
+time.sleep(2)
+client.send_message(tcp.Message(header='reset',body=''))
+time.sleep(1)
 while True:
     # originA = [0,0]
     # originB = [0,1]
-    msg = tcp.Message(header="prey_step", body=cw.Step(location=(0.5,0.5)))
-    if client.send_message(msg):
-        time.sleep(0.1)
-        print("sent")
-    else:
-        print("failed")
+    msg = tcp.Message(header="prey_step", body=cw.Step(agent_name='prey',location=(0.5,0.5)))
+    if bCanUpdate:
+        if client.send_message(msg):
+            print("sent")
+        else:
+            print("failed to send")
+        
+    time.sleep(0.1)
