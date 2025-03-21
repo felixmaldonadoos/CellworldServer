@@ -3,6 +3,7 @@ class VRCoordinateConverter:
     def __init__(self):
         self.origin_transform = {'direction':None, 'scale': None}
         self.origin = {'entry':None, 'exit':None}
+        self.active = False
         pass
     
     def set_origin(self, originA:list=None, originB:list=None, flipY:bool=True):
@@ -10,6 +11,8 @@ class VRCoordinateConverter:
         self.origin['exit']  = [originB[1], -originB[0]] # flip x/y to y/-x
         self.origin_transform['direction'] = game.Direction.radians(self.origin['entry'], self.origin['exit'])
         self.origin_transform['scale']     = game.Point.distance(self.origin['entry'] ,  self.origin['exit'])
+        self.active = True
+        print(f'set origin! active = {self.active}')
     
     def vr_to_canonical(self,x,y)->game.Point:
         dirp = game.Direction.radians(self.origin['entry'], (x,y)) - self.origin_transform['direction']

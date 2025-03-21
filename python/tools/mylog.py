@@ -32,6 +32,10 @@ def save_log_output(model: Model,
         threading.Thread(target=experiment.save, args=(output_file,)).start()
         
     def save_step(timestamp, inframe):
+        if not experiment.episodes or len(experiment.episodes) < 1: 
+            print('[mylog.save_step] No episodes! cant save step')
+            return
+        
         episode: cw.Episode = experiment.episodes[-1]
         for agent_name, agent in model.agents.items():
             agent_step = cw.Step(time_stamp=timestamp,
