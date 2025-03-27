@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "Launch Main Program",
+            "program": "${workspaceFolder}/${input:programName}",
+            "console": "integratedTerminal",
+            "args": ["-r", "-n debug"]
+        }
+    ],
+    "inputs": [
+        {
+            "type": "pickString",
+            "id": "programName",
+            "description": "Select the Python file to launch",
+            "options": [
+                "cudatest.py",
+                "latest_main.py",
+                "main.py",
+                "mylog.py",
+                "pointtest.py",
+                "test.py"
+            ]
+        }
+    ]
+}

@@ -12,7 +12,6 @@ _deps
 **/__pycache__/
 **/.idea/
 # build files 
-<<<<<<< HEAD
 **/build/
 **/logs/*
 .cellworld_cache/
@@ -20,7 +19,6 @@ perf_report.html
 # ignore all .json files in the "/logs/" directory
 **/logs/*.log
 **/logs/*.json
-=======
 **/cmake-build-debug/
 **/cmake/
 **/git-dependencies/
@@ -34,4 +32,5 @@ perf_report.html
 **/logs/*.json
 
 /.idea/
->>>>>>> fixing
+
+**/*.7zip
