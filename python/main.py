@@ -1,7 +1,7 @@
 import argparse 
 from tools.experiment_options import ExperimentArgParse
 from tools.vrcoordinateconverter import VRCoordinateConverter
-
+import numpy as np
 exp_args = ExperimentArgParse()
 experiment_options = exp_args.parse_args()
 
@@ -23,8 +23,6 @@ import asyncio
 from tools import mylog
 from tools.controller_mouse import get_mouse_position
 from tools.peaking import PeakingSystem
-
-
 
 experiment_options.time_step = 1 / experiment_options.sampling_rate
 
@@ -89,37 +87,27 @@ model.add_event_handler("after_stop", on_episode_stopped)
 global server
 server = tcp.MessageServer(ip=experiment_options.ip)
 # used to convert legacy canonical data before sending out for canonical-VR conversion
-def inverse_scale_legacy_y(scaled_y):
-    return (scaled_y - 0.5 + math.sqrt(3) / 4) / (0.5 * math.sqrt(3))
-
-def scale_legacy_y(y):
-    return y * 0.5 * math.sqrt(3) + 0.5 - math.sqrt(3) / 4
 
 def move_mouse(message=None):
-    try:
-        step: cw.Step = message.get_body(body_type=cw.Step)
-        mtx.acquire()
-        if vr_coord_converter and vr_coord_converter.active:
-            converted_coords = vr_coord_converter.vr_to_canonical(step.location.x, step.location.y)
-            print(f'[move_mouse] frame: {step.frame} | Converted: {converted_coords}')
-            model.prey.state.location = (converted_coords[0], converted_coords[1])
-        else:
-            print(f'[move_mouse] NA')
-        model.prey.state.direction = step.rotation * (-1)
-        model.time = step.time_stamp
-        mtx.release()
-        save_step(step.time_stamp, step.frame)
-        # try:
-        #     # mtx.acquire()
-        #     # if model.running:
-        #     #     save_step(step.time_stamp, step.frame)
-        #     # else: 
-        #     #     print(f'Model not running! not saving step')
-        #     # mtx.release()
-        # except Exception as e: 
-        #     print(f'[move_mouse] Exeception saving step: {e} | message: {message}')
-    except Exception as e:
-        print(f"[move_mouse] Exception: {e} | message: {message}")
+    step: cw.Step = message.get_body(body_type=cw.Step)
+    ### OLD IMPLEMENTATION
+    mtx.acquire()
+    model.prey.state.location = (step.location.x, step.location.y)
+    model.prey.state.direction = step.rotation * (-1)
+    model.time = step.time_stamp
+    mtx.release()
+    ### NEW IMPLEMENTATION
+    # if vr_coord_converter and vr_coord_converter.active:
+    #     converted_coords = vr_coord_converter.vr_to_canonical(step.location.x, step.location.y)
+    #     # print(f'[move_mouse] frame: {step.frame} | Converted: {converted_coords}')
+    #     mtx.acquire()
+    #     model.prey.state.location = (converted_coords[0], converted_coords[1])
+    #     model.prey.state.direction = step.rotation * (-1)
+    #     model.time = step.time_stamp
+    #     mtx.release()
+    # else:
+    #     print(f'[move_mouse] VR coordinate converter NULL')
+    # save_step(step.time_stamp, step.frame)
 
 def get_predator_step(message:tcp.Message=None):
     predator_step = cw.Step(agent_name="predator")
@@ -157,7 +145,6 @@ def _stop_(message:tcp.Message=None):
 
 def on_connection(connection=None)->None:
     print(f"connected: {connection}")
-
     if experiment_options.shock:
         pav = pavlok.PyStimTester(stims='vibe',
                         intensities=[100])
@@ -177,55 +164,46 @@ def _pause_(message:tcp.Message=None)->None:
 
 def set_vr_origin(message=None):
     try:
-        t0 = time.time()
         origin_lst = message.body.split(',')
         if len(origin_lst) != 4:
             raise ValueError("[set_vr_origin] Expected 4 comma-separated values")
-        originA = [float(origin_lst[0]), float(origin_lst[1])]
-        originB = [float(origin_lst[2]), float(origin_lst[3])]
-        vr_coord_converter.set_origin(originA=originA, originB=originB)
-        print(f'[set_vr_origin] set origin! active = {vr_coord_converter.active}')
-        print(f'[set_vr_origin] Duration: {time.time() - t0} ')
+        # x,y location of entry and exit doors in UE-VR units 
+        originEntry = [float(origin_lst[0]), float(origin_lst[1])] 
+        originExit  = [float(origin_lst[2]), float(origin_lst[3])]
+        vr_coord_converter.set_origin(originA=originEntry, originB=originExit)
     except Exception as e:
         print(f"[set_vr_origin] Exception: {e}")
 
 def get_cell_locations(message=None):
-    try:
-        mtx.acquire()
-        locations = model.loader.world.implementation.cell_locations
-        for loc in locations:
-            if vr_coord_converter and vr_coord_converter.active:
-                loc.y = vr_coord_converter.canonical_to_vr(loc.y)
-                print(f'Occlusion location: {loc.y}')
-            else:
-                print(f'vr_coord_converter not valid!')
-        mtx.release()
-        return locations
-    except Exception as e:
-        print(f"[get_cell_locations] Exception: {e}")
-        mtx.release()
-        return []
-    
-# def get_cell_locations(message:tcp.Message=None)->json_cpp.JsonList:
-#     print("[get_cell_locations]")
-#     mtx.acquire()
-#     locations = model.loader.world.implementation.cell_locations
-#     for loc in locations: # correct for legacy camera system  
-#         if vr_coord_converter and vr_coord_converter.active:
-#             loc.y = vr_coord_converter.canonical_to_vr(loc.y)
-#             print(f'Occlusion location: {loc.y}')
-#         else:
-#             print(f'vr_coord_converter not valid!')
-#     mtx.release()
-#     return locations
+    print("[get_cell_locations] OLD VERSION") 
+    ### OLD IMPLEMENTATION
+    mtx.acquire()
+    locations = model.loader.world.implementation.cell_locations
+    mtx.release()
+    return locations
+    ### NEW IMPLEMENTATION
+    # try:
+    #     mtx.acquire()
+    #     locations = model.loader.world.implementation.cell_locations
+    #     for loc in locations:
+    #         if vr_coord_converter and vr_coord_converter.active:
+    #             loc.x, loc.y = vr_coord_converter.canonical_to_vr(loc.y, loc.x)
+    #         else:
+    #             print(f'vr_coord_converter not valid!')
+    #     mtx.release()
+    #     # print(locations)
+    #     return locations
+    # except Exception as e:
+    #     print(f"[get_cell_locations] Exception: {e}")
+    #     mtx.release()
+    #     return []
 
 def get_occlusions(message:tcp.Message=None)->json_cpp.JsonList:
-    print("[get_occlusions ]")
+    print("[get_occlusions]")
     mtx.acquire()
     occlusions = model.loader.world.cells.occluded_cells().get('id')
     mtx.release()
     return occlusions
-
 
 ## routes ##
 server.router.add_route("reset", reset)
@@ -241,14 +219,13 @@ server.router.unrouted_message = on_unrouted
 server.on_new_connection       = on_connection
 server.failed_messages = "failed"
 
-running = True
+running                   = True
 server.allow_subscription = True
 
 server.start(port=experiment_options.port)
 print(f"Starting server (allow subscription: {server.allow_subscription})")
 print(f'Subscribers: {server.subscriptions}')
-print(server.router.routes.keys())
-# coordinate_converter = game.CoordinateConverter(screen_size=model.view.screen.get_size())
+coordinate_converter = game.CoordinateConverter(screen_size=model.view.screen.get_size())
 # peaking_system = PeakingSystem(occluded_cells=model.loader.world.cells.occluded_cells().copy())
 # model.peaking_system = peaking_system
 # model.peaking_system.max_peak_distance = 0.075
@@ -256,32 +233,32 @@ print(server.router.routes.keys())
 while running:
     if not model.running: 
         time.sleep(model.time_step)
-        if experiment_options.pcmouse and experiment_options.render:
-            input('Press any key to start new episode...')
-            reset()
         continue
-
-    if experiment_options.pcmouse and experiment_options.render: 
-        x,y = pygame.mouse.get_pos()
-        mouse_step = tcp.Message(header="prey_step", body=cw.Step(location=cw.Location(x,y),
-                                                        time_stamp=0, 
-                                                        frame=0))
-        move_mouse(mouse_step)
-
+    t0 = time.time()
+    ### OLD IMPLEMENTATION
     mtx.acquire()
     model.step()
-    # model.peaking_system.update(model.prey.state.location)
-    # print(f'Is player peaking? {peaking_system.is_peaking}')
-
     predator_step = cw.Step(agent_name="predator")
     predator_step.location = cw.Location(*model.predator.state.location)
-    predator_step.rotation = model.predator.state.direction
-
-    if vr_coord_converter and vr_coord_converter.active:
-        predator_step_vr = vr_coord_converter.canonical_to_vr(predator_step.location.x, predator_step.location.y)
-        predator_step.rotation = (predator_step.rotation +180) * -1
-        server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step_vr))
-
+    predator_step.rotation = (model.predator.state.direction + 00) * (-1)
     mtx.release()
+    server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
+    ### OLD IMPLEMENTATION
     
+    ### NEW IMPLEMENTATION
+    # mtx.acquire()
+    # model.step()
+    # model.peaking_system.update(model.prey.state.location)
+    # print(f'Is player peaking? {peaking_system.is_peaking}')
+    # predator_step = cw.Step(agent_name="predator")
+    # predator_step.location = cw.Location(*model.predator.state.location)
+    # predator_step.rotation = model.predator.state.direction
+    # if vr_coord_converter and vr_coord_converter.active:
+    #     predator_step_vr = vr_coord_converter.canonical_to_vr(predator_step.location.x, predator_step.location.y)
+    #     predator_step.rotation = (predator_step.rotation + 180) * -1
+    #     server.broadcast_subscribed(message=tcp.Message("predator_step", body=cw.Location(predator_step_vr[0], predator_step_vr[1])))
+
+    # mtx.release()
+    ### NEW IMPLEMENTATION
+    print(f'Frame rate: {1/(time.time()-t0):0.2f} | preyt: {model.prey.state.location}')
 print("done!")
