@@ -80,34 +80,28 @@ def myprint(agentstate,los):
 
 model.prey.dynamics.turn_speed = 15 # c.u./s 
 model.prey.dynamics.forward_speed = 15
-model.add_event_handler("puff", on_capture)
-# model.add_event_handler("agents_states_update", myprint) ## new !! 
+# model.add_event_handler("puff", on_capture)
 model.add_event_handler("after_stop", on_episode_stopped)
+# model.add_event_handler("agents_states_update", myprint) ## new !! 
 
 global server
 server = tcp.MessageServer(ip=experiment_options.ip)
-# used to convert legacy canonical data before sending out for canonical-VR conversion
 
 def move_mouse(message=None):
     step: cw.Step = message.get_body(body_type=cw.Step)
-    ### OLD IMPLEMENTATION
-    mtx.acquire()
-    model.prey.state.location = (step.location.x, step.location.y)
-    model.prey.state.direction = step.rotation * (-1)
-    model.time = step.time_stamp
-    mtx.release()
-    ### NEW IMPLEMENTATION
-    # if vr_coord_converter and vr_coord_converter.active:
-    #     converted_coords = vr_coord_converter.vr_to_canonical(step.location.x, step.location.y)
-    #     # print(f'[move_mouse] frame: {step.frame} | Converted: {converted_coords}')
-    #     mtx.acquire()
-    #     model.prey.state.location = (converted_coords[0], converted_coords[1])
-    #     model.prey.state.direction = step.rotation * (-1)
-    #     model.time = step.time_stamp
-    #     mtx.release()
-    # else:
-    #     print(f'[move_mouse] VR coordinate converter NULL')
-    # save_step(step.time_stamp, step.frame)
+    ## NEW IMPLEMENTATION (RECEIVING RAW/UNTRANSFORMED VR/CAMERA LOCATIONS)
+    if vr_coord_converter and vr_coord_converter.active:
+        converted_coords = vr_coord_converter.vr_to_canon(step.location.x, step.location.y)
+        # print(f'[move_mouse] frame: {step.frame} | Converted: {converted_coords}')
+        mtx.acquire()
+        model.prey.state.location = (converted_coords[0], converted_coords[1])
+        # model.prey.state.direction = step.rotation * (-1)
+        model.time = step.time_stamp
+        mtx.release()
+    else:
+        print(f'[move_mouse] VR coordinate converter NULL')
+    
+    save_step(step.time_stamp, step.frame)
 
 def get_predator_step(message:tcp.Message=None):
     predator_step = cw.Step(agent_name="predator")
@@ -163,6 +157,7 @@ def _pause_(message:tcp.Message=None)->None:
     mtx.release()
 
 def set_vr_origin(message=None):
+    print("Set VR origin")
     try:
         origin_lst = message.body.split(',')
         if len(origin_lst) != 4:
@@ -176,27 +171,21 @@ def set_vr_origin(message=None):
 
 def get_cell_locations(message=None):
     print("[get_cell_locations] OLD VERSION") 
-    ### OLD IMPLEMENTATION
-    mtx.acquire()
-    locations = model.loader.world.implementation.cell_locations
-    mtx.release()
-    return locations
-    ### NEW IMPLEMENTATION
-    # try:
-    #     mtx.acquire()
-    #     locations = model.loader.world.implementation.cell_locations
-    #     for loc in locations:
-    #         if vr_coord_converter and vr_coord_converter.active:
-    #             loc.x, loc.y = vr_coord_converter.canonical_to_vr(loc.y, loc.x)
-    #         else:
-    #             print(f'vr_coord_converter not valid!')
-    #     mtx.release()
-    #     # print(locations)
-    #     return locations
-    # except Exception as e:
-    #     print(f"[get_cell_locations] Exception: {e}")
-    #     mtx.release()
-    #     return []
+    try:
+        mtx.acquire()
+        locations = model.loader.world.implementation.cell_locations
+        for loc in locations:
+            if vr_coord_converter and vr_coord_converter.active:
+                loc.x, loc.y = vr_coord_converter.canonical_to_vr(loc.x, loc.y)
+            else:
+                print(f'vr_coord_converter not valid!')
+        mtx.release()
+        # print(locations)
+        return locations
+    except Exception as e:
+        print(f"[get_cell_locations] Exception: {e}")
+        mtx.release()
+        return []
 
 def get_occlusions(message:tcp.Message=None)->json_cpp.JsonList:
     print("[get_occlusions]")
@@ -225,10 +214,9 @@ server.allow_subscription = True
 server.start(port=experiment_options.port)
 print(f"Starting server (allow subscription: {server.allow_subscription})")
 print(f'Subscribers: {server.subscriptions}')
-coordinate_converter = game.CoordinateConverter(screen_size=model.view.screen.get_size())
-# peaking_system = PeakingSystem(occluded_cells=model.loader.world.cells.occluded_cells().copy())
-# model.peaking_system = peaking_system
-# model.peaking_system.max_peak_distance = 0.075
+peaking_system = PeakingSystem(occluded_cells=model.loader.world.cells.occluded_cells().copy())
+model.peaking_system = peaking_system
+model.peaking_system.max_peak_distance = 0.075
 
 while running:
     if not model.running: 
@@ -236,29 +224,31 @@ while running:
         continue
     t0 = time.time()
     ### OLD IMPLEMENTATION
-    mtx.acquire()
-    model.step()
-    predator_step = cw.Step(agent_name="predator")
-    predator_step.location = cw.Location(*model.predator.state.location)
-    predator_step.rotation = (model.predator.state.direction + 00) * (-1)
-    mtx.release()
-    server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
-    ### OLD IMPLEMENTATION
-    
-    ### NEW IMPLEMENTATION
     # mtx.acquire()
     # model.step()
-    # model.peaking_system.update(model.prey.state.location)
-    # print(f'Is player peaking? {peaking_system.is_peaking}')
     # predator_step = cw.Step(agent_name="predator")
     # predator_step.location = cw.Location(*model.predator.state.location)
-    # predator_step.rotation = model.predator.state.direction
-    # if vr_coord_converter and vr_coord_converter.active:
-    #     predator_step_vr = vr_coord_converter.canonical_to_vr(predator_step.location.x, predator_step.location.y)
-    #     predator_step.rotation = (predator_step.rotation + 180) * -1
-    #     server.broadcast_subscribed(message=tcp.Message("predator_step", body=cw.Location(predator_step_vr[0], predator_step_vr[1])))
-
+    # predator_step.rotation = (model.predator.state.direction + 00) * (-1)
     # mtx.release()
+    # server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
+    ### OLD IMPLEMENTATION
+    
+    ## NEW IMPLEMENTATION (RECEIVING RAW/UNTRANSFORMED VR/CAMERA LOCATIONS)
+    mtx.acquire()
+    model.step()
+    # model.peaking_system.update(model.prey.state.location)
+    # print(f'Is player peaking? {peaking_system.is_peaking}')
+    predator_step = cw.Step(agent_name="predator")
+    predator_step.location = cw.Location(*model.predator.state.location)
+    predator_step.rotation = model.predator.state.direction
+    if vr_coord_converter and vr_coord_converter.active:
+        predator_step_vr = vr_coord_converter.canonical_to_vr(predator_step.location.x, predator_step.location.y)
+        predator_step.rotation = (predator_step.rotation + 180) * -1
+        server.broadcast_subscribed(message=tcp.Message("predator_step", body=cw.Location(predator_step_vr[0], predator_step_vr[1])))
+    else: 
+        print('[MAIN] NOT SENDING PREDATOR LOCATION - VRCOORDINATECONVERTER() NOT ACTIVE')
+
+    mtx.release()
     ### NEW IMPLEMENTATION
-    print(f'Frame rate: {1/(time.time()-t0):0.2f} | preyt: {model.prey.state.location}')
+    print(f'Frame rate: {1/(time.time()-t0):0.2f} | preyt: {model.prey.state.location}') # canonical 
 print("done!")
