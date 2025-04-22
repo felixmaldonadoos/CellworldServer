@@ -80,7 +80,7 @@ def myprint(agentstate,los):
 
 model.prey.dynamics.turn_speed = 15 # c.u./s 
 model.prey.dynamics.forward_speed = 15
-# model.add_event_handler("puff", on_capture)
+model.add_event_handler("puff", on_capture)
 model.add_event_handler("after_stop", on_episode_stopped)
 # model.add_event_handler("agents_states_update", myprint) ## new !! 
 
