@@ -11,6 +11,13 @@ CTestTestfile.cmake
 _deps
 **/__pycache__/
 **/.idea/
+
+# server test files
+
+**/tests/*.json
+**/tests/*.csv
+**/tests/*.txt
+
 # build files 
 **/build/
 **/logs/*
