@@ -17,6 +17,7 @@ _deps
 **/tests/*.json
 **/tests/*.csv
 **/tests/*.txt
+**/tests/*.log
 
 # build files 
 **/build/
