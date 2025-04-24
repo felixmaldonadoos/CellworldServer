@@ -223,17 +223,7 @@ while running:
         time.sleep(model.time_step)
         continue
     t0 = time.time()
-    ### OLD IMPLEMENTATION
-    # mtx.acquire()
-    # model.step()
-    # predator_step = cw.Step(agent_name="predator")
-    # predator_step.location = cw.Location(*model.predator.state.location)
-    # predator_step.rotation = (model.predator.state.direction + 00) * (-1)
-    # mtx.release()
-    # server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
-    ### OLD IMPLEMENTATION
-    
-    ## NEW IMPLEMENTATION (RECEIVING RAW/UNTRANSFORMED VR/CAMERA LOCATIONS)
+
     mtx.acquire()
     model.step()
     # model.peaking_system.update(model.prey.state.location)
@@ -242,13 +232,20 @@ while running:
     predator_step.location = cw.Location(*model.predator.state.location)
     predator_step.rotation = model.predator.state.direction
     if vr_coord_converter and vr_coord_converter.active:
-        predator_step_vr = vr_coord_converter.canonical_to_vr(predator_step.location.x, predator_step.location.y)
+        # loc.x, loc.y = vr_coord_converter.canonical_to_vr(loc.x, loc.y)
+        predator_location_vr = vr_coord_converter.canonical_to_vr(predator_step.location.x, predator_step.location.y)
         predator_step.rotation = (predator_step.rotation + 180) * -1
-        server.broadcast_subscribed(message=tcp.Message("predator_step", body=cw.Location(predator_step_vr[0], predator_step_vr[1])))
+        predator_step.location = cw.Location(x=predator_location_vr[0],y=predator_location_vr[1])
+        # x_round = round(predator_step_vr[0])
+        # y_round = round(predator_step_vr[1])
+
+        
+        server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
+        print(f'[MAIN] sent pred step: {predator_step}')
     else: 
         print('[MAIN] NOT SENDING PREDATOR LOCATION - VRCOORDINATECONVERTER() NOT ACTIVE')
 
     mtx.release()
     ### NEW IMPLEMENTATION
-    print(f'Frame rate: {1/(time.time()-t0):0.2f} | preyt: {model.prey.state.location}') # canonical 
+    # print(f'Frame rate: {1/(time.time()-t0):0.2f} | preyt: {model.prey.state.location}') # canonical 
 print("done!")
