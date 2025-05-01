@@ -96,7 +96,7 @@ def move_mouse(message=None):
         # converted_rotation = vr_coord_converter.vr_to_canon_rotation(step.location.x, step.location.y)
         mtx.acquire() # .5- 4 sec | BAD -- FIXED -alexM 4/25/2025
         model.prey.state.location = (converted_coords[0], converted_coords[1]) # e-6 sec
-        model.prey.state.direction = (step.rotation+90)*-1 # validate
+        model.prey.state.direction = (step.rotation+90) # validate
         model.time = step.time_stamp
         mtx.release() # e-6 sec 
     else:

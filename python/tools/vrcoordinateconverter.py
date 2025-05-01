@@ -36,6 +36,10 @@ class VRCoordinateConverter:
         distp = game.Point.distance(self.origin['entry'],(x,y)) / self.origin_transform['scale']
         return game.Point.move((0, .5), distance=distp, direction_radians=dirp)
     
+    def vr_to_canon_rotation(self, x, y):
+        dirp = game.Direction.radians(self.origin['entry'], (x,y)) - self.origin_transform['direction']
+        return dirp
+
     def vr_to_canon(self, x, y)->game.Point:
         # x_prime = ((x - self.x_left) *self.dx + ( y - self.y_left)*self.dy)/self.denominator
         # y_prime = (-(x - self.x_left)*self.dy + (y - self.y_left)*self.dx)/self.denominator + 0.5
