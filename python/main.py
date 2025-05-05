@@ -55,8 +55,8 @@ def on_capture(mdl:game.BotEvade=None)->None:
     if experiment_options.shock:
         try: 
             print('[on_capture] Sending vibe stimulus')
-            pav = pavlok.PyStimTester(stims='vibe', 
-                         intensities=[100])
+            pav = pavlok.PyStimTester(stims='zap', 
+                         intensities=[40])
             asyncio.run(pav.start(show_output=False))
         except Exception as e:
             print(f"[on_capture] Error: {e}")
