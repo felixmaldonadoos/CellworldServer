@@ -90,7 +90,6 @@ server = tcp.MessageServer(ip=experiment_options.ip)
 
 def move_mouse(message=None):
     step: cw.Step = message.get_body(body_type=cw.Step) # hold location + rotation
-    tm = time.time()
     if vr_coord_converter and vr_coord_converter.active:
         converted_coords = vr_coord_converter.vr_to_canon(step.location.x, step.location.y) # e-7 s
         # converted_rotation = vr_coord_converter.vr_to_canon_rotation(step.location.x, step.location.y)
@@ -99,9 +98,10 @@ def move_mouse(message=None):
         model.prey.state.direction = (step.rotation+90) # validate
         model.time = step.time_stamp
         mtx.release() # e-6 sec 
+        print(step.data)
     else:
         print(f'[move_mouse] VR coordinate converter NULL')
-    save_step(step.time_stamp, step.frame)
+    save_step(step.time_stamp, step.frame, step.data)
 
 def get_predator_step(message:tcp.Message=None):
     predator_step = cw.Step(agent_name="predator")

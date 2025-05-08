@@ -31,7 +31,7 @@ def save_log_output(model: Model,
         output_file = os.path.join(log_folder, f"{experiment_name}.json")
         threading.Thread(target=experiment.save, args=(output_file,)).start()
         
-    def save_step(timestamp, inframe):
+    def save_step(timestamp, inframe, data):
         if not experiment.episodes or len(experiment.episodes) < 1: 
             print('[mylog.save_step] No episodes! cant save step')
             return
@@ -42,7 +42,8 @@ def save_log_output(model: Model,
                                  location=cw.Location(*agent.state.location),
                                  rotation=90-agent.state.direction,
                                  agent_name=agent_name,
-                                 frame=inframe)
+                                 frame=inframe,
+                                 data = data)
             episode.trajectories.append(agent_step)
 
     def after_step(*args):

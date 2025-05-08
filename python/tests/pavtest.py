@@ -92,8 +92,8 @@ class PyStimTester:
 
     async def start(self, show_output:bool=False):
         import time
-        access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6bnVsbCwiaWQiOjMyNjI2NSwiZW1haWwiOiJtYWNpdmVybGFiQHUubm9ydGh3ZXN0ZXJuLmVkdSIsImlzX2FwcGxpY2F0aW9uIjpmYWxzZSwiZXhwIjoxNzcwNzUwNjczLCJzdWIiOiJhY2Nlc3MifQ.2YhAjTNxi186GK4_l_v3ue2W0VCotvdwzcKkvHVqDlc"
-        interface = "10.105.229.251"
+        access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6bnVsbCwiaWQiOjMyNjI2NSwiZW1haWwiOiJtYWNpdmVybGFiQHUubm9ydGh3ZXN0ZXJuLmVkdSIsImlzX2FwcGxpY2F0aW9uIjpmYWxzZSwiZXhwIjoxNzc3NzU2MjQwLCJzdWIiOiJhY2Nlc3MifQ.1cSbQ2YVFo6QuGR9Su8epYrPnOZJOvsa5GVsBSvsVSk"
+        interface = "10.105.92.189"
         for i in self.intensities:
             print(f'Sending stimulis: {self.stims} at intensity:', i)
             beep_request = PyStimulusRequest(access_token, interface, stim=self.stims, intensity=i)
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     times = []
     while True:
         t0 = time.time()
-        pav = PyStimTester(stims='vibe', 
+        pav = PyStimTester(stims='beep', 
                      intensities=[100])
         asyncio.run(pav.start(show_output=False))
         times.append(time.time()-t0)
