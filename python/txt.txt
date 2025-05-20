@@ -1,0 +1,4 @@
+- capture thru obs
+- test 100% pavlok
+- sound on success fix 
+- reverse rotxn predator

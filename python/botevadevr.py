@@ -1,7 +1,8 @@
 import random
 from cellworld_game.agent import Agent
 from cellworld_game.util import Point
-from cellworld_game.model import Model
+# from cellworld_game.model import Model
+from modelvr import ModelVR
 from cellworld_game.agent import AgentState, CoordinateConverter
 # from cellworld_game.mouse import Point
 from cellworld_game.robot import Robot
@@ -28,7 +29,7 @@ class BotEvadePreyData:
         self.prey_goal_distance = 0
         self.puff_count = 0
 
-class BotEvadeVR(Model):
+class BotEvadeVR(ModelVR):
     class PointOfView(enum.Enum):
         TOP = ""
         PREY = "prey"
@@ -59,7 +60,7 @@ class BotEvadeVR(Model):
         self.goal_location = goal_location
         self.goal_threshold = goal_threshold
         self.loader = CellWorldLoader(world_name=world_name)
-        Model.__init__(self,
+        ModelVR.__init__(self,
                        world_name=world_name,
                        arena=self.loader.arena,
                        occlusions=self.loader.occlusions,
@@ -153,7 +154,7 @@ class BotEvadeVR(Model):
         self.stop()
 
     def reset(self):
-        Model.reset(self)
+        ModelVR.reset(self)
         self.prey_data.goal_achieved = False
         self.prey_data.predator_visible = False
         self.prey_data.puff_count = 0
@@ -161,7 +162,7 @@ class BotEvadeVR(Model):
         self.__update_state__()
 
     def step(self) -> float:
-        delta_t = Model.step(self)
+        delta_t = ModelVR.step(self)
         if self.render:
             self.view.render()
         self.__update_state__(delta_t=delta_t)

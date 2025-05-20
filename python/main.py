@@ -24,18 +24,20 @@ import asyncio
 from tools import mylog
 from tools.controller_mouse import get_mouse_position
 from tools.peaking import PeakingSystem
+from botevadevr import BotEvadeVR
+from cellworld_game.tasks import BotEvade
 
 experiment_options.time_step = 1 / experiment_options.sampling_rate
-
 mtx = th.RLock()
 print(f'Rendering: {experiment_options.render} | time step: {experiment_options.time_step:0.4f} ({experiment_options.sampling_rate} Hz)')
 print(f"*** starting server on {experiment_options.ip}:{experiment_options.port} ***\n")
 
 ## load world and model 
-loader = game.CellWorldLoader(world_name="21_05") # original: "21_05"
+world = 'clump02_05'
+loader = game.CellWorldLoader(world_name=world) # original: "21_05"
 global model
 
-model = game.BotEvade(world_name="21_05", 
+model = BotEvadeVR(world_name=world, 
                       render=experiment_options.render,
                       time_step=experiment_options.time_step, 
                       real_time=True, 
@@ -56,7 +58,7 @@ def on_capture(mdl:game.BotEvade=None)->None:
         try: 
             print('[on_capture] Sending vibe stimulus')
             pav = pavlok.PyStimTester(stims='zap', 
-                         intensities=[40])
+                         intensities=[90])
             asyncio.run(pav.start(show_output=False))
         except Exception as e:
             print(f"[on_capture] Error: {e}")
@@ -72,6 +74,9 @@ def generate_experiment_name(basename:str = "ExperimentNameBase"):
     return f"{basename}_{formatted_time}"
 
 experiment_options.name = generate_experiment_name(experiment_options.name)
+experiment_options.name = f'{experiment_options.name}_{world}'
+print(f'Experiment name: {experiment_options.name}')
+
 _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_name=experiment_options.name, 
     log_folder='logs/', save_checkpoint=True)
 
@@ -95,7 +100,7 @@ def move_mouse(message=None):
         # converted_rotation = vr_coord_converter.vr_to_canon_rotation(step.location.x, step.location.y)
         mtx.acquire() # .5- 4 sec | BAD -- FIXED -alexM 4/25/2025
         model.prey.state.location = (converted_coords[0], converted_coords[1]) # e-6 sec
-        model.prey.state.direction = (step.rotation+90) # validate
+        model.prey.state.direction = (180 - step.rotation) # validate
         model.time = step.time_stamp
         mtx.release() # e-6 sec 
         print(step.data)
@@ -113,14 +118,14 @@ def reset(message):
     model.reset()
     mtx.release()
     print(f"[New Episode Started]")
-    if experiment_options.shock:
-        try: 
-            print('[reset] Sending vibe stimulus')
-            pav = pavlok.PyStimTester(stims='vibe', 
-                         intensities=[100])
-            asyncio.run(pav.start(show_output=False))
-        except Exception as e:
-            print(f"[reset] Error: {e}")
+    # if experiment_options.shock:
+    #     try: 
+    #         print('[reset] Sending vibe stimulus')
+    #         pav = pavlok.PyStimTester(stims='shock', 
+    #                      intensities=[50])
+    #         asyncio.run(pav.start(show_output=False))
+    #     except Exception as e:
+    #         print(f"[reset] Error: {e}")
 
     return 'success'
 
@@ -221,6 +226,9 @@ model.peaking_system.max_peak_distance = 0.075
 while running:
     if not model.running: 
         time.sleep(model.time_step)
+        if experiment_options.pcmouse and experiment_options.render: 
+            input('Press [Enter] to start experiment...')
+            model.reset()
         continue
     
     predator_step = cw.Step(agent_name="predator")
@@ -231,15 +239,21 @@ while running:
     # print(f'Is player peaking? {peaking_system.is_peaking}')
     predator_step.location = cw.Location(*model.predator.state.location)
     predator_step.rotation = model.predator.state.direction
-    print(f'fs: {model.step_count / model.time}')
+    # print(f'fs: {model.step_count / model.time}')
+    if experiment_options.pcmouse and experiment_options.render: 
+        sx,sy = model.view.screen.get_size()
+        mx,my = get_mouse_position(sx,sy)
+        model.prey.state.location = (mx,my)
     mtx.release()
+
     if vr_coord_converter and vr_coord_converter.active:
         predator_location_vr = vr_coord_converter.canonical_to_vr(predator_step.location.x, predator_step.location.y)
         predator_step.rotation = (predator_step.rotation + 180)
         predator_step.location = cw.Location(x=predator_location_vr[0],y=predator_location_vr[1])
         server.broadcast_subscribed(message=tcp.Message("predator_step", body=predator_step))
-    else: 
-        print('[MAIN] NOT SENDING PREDATOR LOCATION - VRCOORDINATECONVERTER() NOT ACTIVE')
+    else:
+        pass
+        # print('[MAIN] NOT SENDING PREDATOR LOCATION - VRCOORDINATECONVERTER() NOT ACTIVE')
     # print(f'Frame rate: {1/(time.time()-t0):0.2f}')
 
 print("done!")

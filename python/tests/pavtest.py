@@ -93,16 +93,18 @@ class PyStimTester:
     async def start(self, show_output:bool=False):
         import time
         access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6bnVsbCwiaWQiOjMyNjI2NSwiZW1haWwiOiJtYWNpdmVybGFiQHUubm9ydGh3ZXN0ZXJuLmVkdSIsImlzX2FwcGxpY2F0aW9uIjpmYWxzZSwiZXhwIjoxNzc3NzU2MjQwLCJzdWIiOiJhY2Nlc3MifQ.1cSbQ2YVFo6QuGR9Su8epYrPnOZJOvsa5GVsBSvsVSk"
-        interface = "10.105.92.189"
+        interface = "10.105.114.180"
         for i in self.intensities:
-            print(f'Sending stimulis: {self.stims} at intensity:', i)
-            beep_request = PyStimulusRequest(access_token, interface, stim=self.stims, intensity=i)
-            stdout, stderr = await beep_request.send_request()
-            
-            if show_output:
-                print("Errors:", stderr if stderr else "No errors")
-                print("Token Response:", stdout)
-
+            try:
+                print(f'Sending stimulis: {self.stims} at intensity:', i)
+                beep_request = PyStimulusRequest(access_token, interface, stim=self.stims, intensity=i)
+                stdout, stderr = await beep_request.send_request()
+                
+                if show_output:
+                    print("Errors:", stderr if stderr else "No errors")
+                    print("Token Response:", stdout)
+            except Exception as e: 
+                print(f'Pavlok exception: {e}')
 
 if __name__ == "__main__":
     import time
