@@ -22,8 +22,7 @@ echo "export CELLWORLD_CACHE="path/to/dir/cellworld_data""
 
 ```
 
-### Experiment Service Server (main/cpp/)
+#### Todo: 
 
-Requires `CMAKE` and `libcurl`. 
-
+- Check `model.is_valid_state()` to investigate how to implement collision detection
 
