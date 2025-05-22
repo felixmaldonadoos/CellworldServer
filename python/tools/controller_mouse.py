@@ -1,4 +1,5 @@
 import pygame
+import math
 
 def normalize_mouse_pos(screen_width, screen_height):
     pygame.init()
@@ -25,9 +26,13 @@ def normalize_mouse_pos(screen_width, screen_height):
     pygame.quit()
 
 @staticmethod
+def scale_legacy_y(y):
+    return y * 0.5 * math.sqrt(3) + 0.5 - math.sqrt(3) / 4
+
+@staticmethod
 def get_mouse_position(screen_width, screen_height)->tuple:
     raw_x, raw_y = pygame.mouse.get_pos()
-    return raw_x / screen_width, 1 - (raw_y / screen_height)
+    return raw_x / screen_width, scale_legacy_y(1 - (raw_y / screen_height))
 
 # Example usage
 if __name__ == "__main__":
