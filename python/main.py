@@ -9,9 +9,6 @@ print("\n=== Starting BotEvade Agent Tracking Server ===")
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import time
-import math
-import pygame
-import torch
 from cellworld_game.util import Point
 import json_cpp
 import cellworld as cw
@@ -25,7 +22,6 @@ from tools import mylog
 from tools.controller_mouse import get_mouse_position
 from tools.peaking import PeakingSystem
 from botevadevr import BotEvadeVR
-from cellworld_game.tasks import BotEvade
 
 experiment_options.time_step = 1 / experiment_options.sampling_rate
 mtx = th.RLock()

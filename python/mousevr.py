@@ -40,7 +40,8 @@ class MouseVR(NavigationAgent):
 
     @staticmethod
     def create_body_polygon() -> Polygon:
-        r = 0.015
+        r_m = 41.1 / 100 # https://www.cdc.gov/nchs/data/series/sr_11/sr11_249.pdf#page=64.06
+        r = r_m*0.5 / (2.34*14.2) # meters to canonical
         n = 32  # number of vertices
         return Polygon([
             (r * math.cos(2 * math.pi * i / n),

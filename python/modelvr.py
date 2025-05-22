@@ -9,7 +9,6 @@ from cellworld_game.event import EventDispatcher
 from cellworld_game.line_of_sight import LineOfSight
 
 class ModelVR(EventDispatcher):
-
     def __init__(self,
                  world_name: str,
                  arena: Polygon,
