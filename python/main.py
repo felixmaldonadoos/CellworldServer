@@ -48,9 +48,9 @@ global vr_coord_converter
 vr_coord_converter = VRCoordinateConverter()
 
 def on_capture(mdl:game.Model=None)->None:
+    print('[on_capture]')
     mtx.acquire()
     model.stop()
-    # print('TODO: BROADCAST WITH MESSAGE THAT SAYS `CAPTURED` | `REACHED_GOAL`')
     mtx.release()
     if server: 
         server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
@@ -64,7 +64,7 @@ def on_capture(mdl:game.Model=None)->None:
             print(f"[on_capture] Error: {e}")
 
 def on_episode_stopped(mdl:game.Model=None)->None:
-    print('[on_episode_stopped] Sending `on_capture` message (temporary)')
+    print('[on_episode_stopped]')
     if server: 
         server.broadcast_subscribed(message=tcp.Message("on_episode_finished", body=""))
 
@@ -103,7 +103,6 @@ def move_mouse(message=None):
         model.prey.state.direction = (180 - step.rotation) # validate
         model.time = step.time_stamp
         mtx.release() # e-6 sec 
-        print(step.data)
     else:
         print(f'[move_mouse] VR coordinate converter NULL')
     save_step(step.time_stamp, step.frame, step.data)
@@ -174,7 +173,6 @@ def set_vr_origin(message=None):
         print(f"[set_vr_origin] Exception: {e}")
 
 def get_cell_locations(message=None):
-    print("[get_cell_locations] OLD VERSION") 
     try:
         mtx.acquire()
         locations = model.loader.world.implementation.cell_locations
