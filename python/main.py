@@ -47,7 +47,7 @@ model = BotEvadeVR(world_name=world,
 global vr_coord_converter
 vr_coord_converter = VRCoordinateConverter()
 
-def on_capture(mdl:game.BotEvade=None)->None:
+def on_capture(mdl:game.Model=None)->None:
     mtx.acquire()
     model.stop()
     # print('TODO: BROADCAST WITH MESSAGE THAT SAYS `CAPTURED` | `REACHED_GOAL`')
@@ -63,10 +63,10 @@ def on_capture(mdl:game.BotEvade=None)->None:
         except Exception as e:
             print(f"[on_capture] Error: {e}")
 
-def on_episode_stopped(mdl:game.BotEvade=None)->None:
+def on_episode_stopped(mdl:game.Model=None)->None:
     print('[on_episode_stopped] Sending `on_capture` message (temporary)')
     if server: 
-        server.broadcast_subscribed(message=tcp.Message("on_capture", body=""))
+        server.broadcast_subscribed(message=tcp.Message("on_episode_finished", body=""))
 
 def generate_experiment_name(basename:str = "ExperimentNameBase"):
     current_time = datetime.now()
@@ -126,7 +126,6 @@ def reset(message):
     #         asyncio.run(pav.start(show_output=False))
     #     except Exception as e:
     #         print(f"[reset] Error: {e}")
-
     return 'success'
 
 def _close_():
