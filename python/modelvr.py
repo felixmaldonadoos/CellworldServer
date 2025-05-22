@@ -1,16 +1,14 @@
 import time
 import typing
 import shapely as sp
+from cellworld_game.util import Point
+from cellworld_game.agent import Agent, AgentState
+from cellworld_game.visibility import Visibility
+from cellworld_game.polygon import Polygon
+from cellworld_game.event import EventDispatcher
+from cellworld_game.line_of_sight import LineOfSight
 
-from .util import Point
-from .agent import Agent, AgentState
-from .visibility import Visibility
-from .polygon import Polygon
-from .event import EventDispatcher
-from .line_of_sight import LineOfSight
-
-
-class Model(EventDispatcher):
+class ModelVR(EventDispatcher):
 
     def __init__(self,
                  world_name: str,
@@ -55,7 +53,8 @@ class Model(EventDispatcher):
             self.occlusion_color = (50, 50, 50)
             self.arena_color = (210, 210, 210)
             self.visibility_color = (255, 255, 255)
-            from .view import View
+            from cellworld_game.view import View
+            # from .view import View
             self.view = View(model=self)
             self.view.add_event_handler("quit", self.close)
 
@@ -168,6 +167,7 @@ class Model(EventDispatcher):
                         # agent is peaking for more time that allowed (peaking_system.max_peaking_time), 
                         # if peaking_system.is_peaking is False and has_line_of_sight remains True (agent is detected)
                         # is peaking_system.is_peaking is True, has_line_of_sight remains False (agent is hidden/not detected)
+                        # if has_line_of_sight and agent == 'predator' and other_agent.name == 'prey': 
                         if has_line_of_sight and other_agent.name == 'prey': 
                             if self.peaking_system: 
                                 self.peaking_system.update(other_agent.state.location) 
@@ -177,6 +177,7 @@ class Model(EventDispatcher):
                     else:
                         has_line_of_sight = False
                     self.line_of_sight[agent_name, other_agent_name] = has_line_of_sight
+        #
         self.__dispatch__("agents_states_update", agents_state, self.line_of_sight)
 
     def pause(self):

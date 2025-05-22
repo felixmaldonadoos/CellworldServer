@@ -3,7 +3,7 @@ import numpy as np
 import math
 class VRCoordinateConverter:
     def __init__(self):
-        print("Initialised")
+        print("[VRCoordinateConverter] Initialised")
         self.origin_transform = {'direction':None, 'scale': None}
         self.origin = {'entry':None, 'exit':None}
         self.active = False
@@ -27,9 +27,9 @@ class VRCoordinateConverter:
         self.origin_transform['direction'] = game.Direction.radians(self.origin['entry'], self.origin['exit']) ##  + np.pi/2
         self.origin_transform['scale']     = game.Point.distance(self.origin['entry'] ,  self.origin['exit'])
         self.active = True
-        print(f'[set origin] Active: {self.active}')
-        print(f'[set origin] Origin: {self.origin}')
-        print(f'[set origin] Origin Tranform: {self.origin_transform}')
+        print(f'[VRCoordinateConverter] Active: {self.active}')
+        print(f'[VRCoordinateConverter] Origin: {self.origin}')
+        print(f'[VRCoordinateConverter] Origin Tranform: {self.origin_transform}')
     
     def vr_to_canonical_v1(self,x,y)->game.Point:
         dirp = game.Direction.radians(self.origin['entry'], (x,y)) - self.origin_transform['direction']
