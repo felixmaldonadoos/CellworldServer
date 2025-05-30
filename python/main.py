@@ -1,11 +1,12 @@
-import argparse 
 from tools.experiment_options import ExperimentArgParse
 from tools.vrcoordinateconverter import VRCoordinateConverter
-import numpy as np
 exp_args = ExperimentArgParse()
 experiment_options = exp_args.parse_args()
 
-print("\n=== Starting BotEvade Agent Tracking Server ===")
+global srvlog
+srvlog = Logger("Server")
+
+srvlog.success(msg="=== cellworld BotEvadeVR Server ===")
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import time
@@ -22,15 +23,27 @@ from tools import mylog
 from tools.controller_mouse import get_mouse_position
 from tools.peaking import PeakingSystem
 from botevadevr import BotEvadeVR
+from tools.logger import Logger
+
 
 experiment_options.time_step = 1 / experiment_options.sampling_rate
 mtx = th.RLock()
-print(f'Rendering: {experiment_options.render} | time step: {experiment_options.time_step:0.4f} ({experiment_options.sampling_rate} Hz)')
-print(f"*** starting server on {experiment_options.ip}:{experiment_options.port} ***\n")
+srvlog.log(
+    f"Rendering: {experiment_options.render} | "
+    f"time step: {experiment_options.time_step:0.4f} "
+    f"({experiment_options.sampling_rate} Hz)",
+    subheader="Config"
+)
+# server startup
+srvlog.success(
+    f"starting server on {experiment_options.ip}:{experiment_options.port}",
+    subheader="Startup"
+)
+# print(f'Rendering: {experiment_options.render} | time step: {experiment_options.time_step:0.4f} ({experiment_options.sampling_rate} Hz)')
+# print(f"*** starting server on {experiment_options.ip}:{experiment_options.port} ***\n")
 
-## load world and model 
 world = 'clump02_05'
-loader = game.CellWorldLoader(world_name=world) # original: "21_05"
+loader = game.CellWorldLoader(world_name=world) 
 global model
 
 model = BotEvadeVR(world_name=world, 
@@ -42,9 +55,11 @@ model = BotEvadeVR(world_name=world,
 
 global vr_coord_converter
 vr_coord_converter = VRCoordinateConverter()
+if vr_coord_converter and srvlog: 
+    srvlog.log(msg='Initialized',subheader='VRCoordinateConverter')
 
 def on_capture(mdl:game.Model=None)->None:
-    print('[on_capture]')
+    srvlog.log(subheader='Experiment',msg='Captured')
     mtx.acquire()
     model.stop()
     mtx.release()
@@ -53,14 +68,18 @@ def on_capture(mdl:game.Model=None)->None:
     if experiment_options.shock:
         try: 
             print('[on_capture] Sending vibe stimulus')
+            
+            stim = 'zap'
+            intensity = 90
+            srvlog.log(subheader='Experiment',msg='Sending pavlok stimulus',stim=stim, intensity=intensity)
             pav = pavlok.PyStimTester(stims='zap', 
-                         intensities=[90])
+                         intensities=[intensity])
             asyncio.run(pav.start(show_output=False))
         except Exception as e:
             print(f"[on_capture] Error: {e}")
 
 def on_episode_stopped(mdl:game.Model=None)->None:
-    print('[on_episode_stopped]')
+    srvlog.warning(subheader='Experiment',msg='Episode Finished')
     if server: 
         server.broadcast_subscribed(message=tcp.Message("on_episode_finished", body=""))
 
@@ -71,7 +90,7 @@ def generate_experiment_name(basename:str = "ExperimentNameBase"):
 
 experiment_options.name = generate_experiment_name(experiment_options.name)
 experiment_options.name = f'{experiment_options.name}_{world}'
-print(f'Experiment name: {experiment_options.name}')
+srvlog.warning(subheader='Status',experiment_name=experiment_options.name)
 
 _, _, after_stop, save_step = mylog.save_log_output(model = model, experiment_name=experiment_options.name, 
     log_folder='logs/', save_checkpoint=True)
@@ -80,8 +99,6 @@ def myprint(agentstate,los):
     print(agentstate)
     print(los)
 
-model.prey.dynamics.turn_speed = 15 # c.u./s 
-model.prey.dynamics.forward_speed = 15
 model.add_event_handler("puff", on_capture)
 model.add_event_handler("after_stop", on_episode_stopped)
 # model.add_event_handler("agents_states_update", myprint) ## new !! 
@@ -90,17 +107,16 @@ global server
 server = tcp.MessageServer(ip=experiment_options.ip)
 
 def move_mouse(message=None):
-    step: cw.Step = message.get_body(body_type=cw.Step) # hold location + rotation
+    step: cw.Step = message.get_body(body_type=cw.Step)
     if vr_coord_converter and vr_coord_converter.active:
-        converted_coords = vr_coord_converter.vr_to_canon(step.location.x, step.location.y) # e-7 s
-        # converted_rotation = vr_coord_converter.vr_to_canon_rotation(step.location.x, step.location.y)
-        mtx.acquire() # .5- 4 sec | BAD -- FIXED -alexM 4/25/2025
-        model.prey.state.location = (converted_coords[0], converted_coords[1]) # e-6 sec
-        model.prey.state.direction = (180 - step.rotation) # validate
+        converted_coords = vr_coord_converter.vr_to_canon(step.location.x, step.location.y)
+        mtx.acquire() 
+        model.prey.state.location = (converted_coords[0], converted_coords[1])
+        model.prey.state.direction = (180 - step.rotation) 
         model.time = step.time_stamp
-        mtx.release() # e-6 sec 
+        mtx.release() 
     else:
-        print(f'[move_mouse] VR coordinate converter NULL')
+        srvlog.warning(subheader='move_mouse',msg='VR coordinate converter NULL')
     save_step(step.time_stamp, step.frame, step.data)
 
 def get_predator_step(message:tcp.Message=None):
@@ -112,32 +128,25 @@ def reset(message):
     mtx.acquire()
     model.reset()
     mtx.release()
-    print(f"[New Episode Started]")
-    # if experiment_options.shock:
-    #     try: 
-    #         print('[reset] Sending vibe stimulus')
-    #         pav = pavlok.PyStimTester(stims='shock', 
-    #                      intensities=[50])
-    #         asyncio.run(pav.start(show_output=False))
-    #     except Exception as e:
-    #         print(f"[reset] Error: {e}")
+    srvlog.success(subheader='Experiment',msg='Episode Started')
     return 'success'
 
 def _close_():
     print('_close_')
+    srvlog.warning(subheader='_close_',msg='Closing...')
     mtx.acquire()
     model.close()
     mtx.release()
 
 def _stop_(message:tcp.Message=None):
-    print(f"[ Episode Finished ] ")
+    srvlog.log(subheader='_stop_',msg='Episode Finished')
     mtx.acquire()
     model.stop()
     mtx.release()
     return 'success'
 
 def on_connection(connection=None)->None:
-    print(f"connected: {connection}")
+    srvlog.success(subheader='on_connection',connection=connection)
     if experiment_options.shock:
         pav = pavlok.PyStimTester(stims='vibe',
                         intensities=[100])
@@ -156,15 +165,17 @@ def _pause_(message:tcp.Message=None)->None:
     mtx.release()
 
 def set_vr_origin(message=None):
+    sh = 'Coordinates'
+    srvlog.log(subheader=sh)
     print("Set VR origin")
     try:
         origin_lst = message.body.split(',')
         if len(origin_lst) != 4:
             raise ValueError("[set_vr_origin] Expected 4 comma-separated values")
-        # x,y location of entry and exit doors in UE-VR units 
         originEntry = [float(origin_lst[0]), float(origin_lst[1])] 
         originExit  = [float(origin_lst[2]), float(origin_lst[3])]
         vr_coord_converter.set_origin(originA=originEntry, originB=originExit)
+        srvlog.log(subheader=sh,active=vr_coord_converter.active)
     except Exception as e:
         print(f"[set_vr_origin] Exception: {e}")
 
@@ -176,9 +187,8 @@ def get_cell_locations(message=None):
             if vr_coord_converter and vr_coord_converter.active:
                 loc.x, loc.y = vr_coord_converter.canonical_to_vr(loc.x, loc.y)
             else:
-                print(f'vr_coord_converter not valid!')
+                srvlog.error(subheader='Coordinates',msg='VRCoordinateConverter is NULL')
         mtx.release()
-        # print(locations)
         return locations
     except Exception as e:
         print(f"[get_cell_locations] Exception: {e}")
@@ -186,7 +196,7 @@ def get_cell_locations(message=None):
         return []
 
 def get_occlusions(message:tcp.Message=None)->json_cpp.JsonList:
-    print("[get_occlusions]")
+    srvlog.log(subheader='get_occlusions')
     mtx.acquire()
     occlusions = model.loader.world.cells.occluded_cells().get('id')
     mtx.release()
@@ -210,18 +220,19 @@ running                   = True
 server.allow_subscription = True
 
 server.start(port=experiment_options.port)
-print(f"Starting server (allow subscription: {server.allow_subscription})")
-print(f'Subscribers: {server.subscriptions}')
-peaking_system = PeakingSystem(occluded_cells=model.loader.world.cells.occluded_cells().copy())
-model.peaking_system = peaking_system
-model.peaking_system.max_peak_distance = 0.075
+srvlog.log(msg='Starting Server.',allow_subscription=server.allow_subscription, subscriptions=server.subscriptions)
+# print(f"Starting server (allow subscription: {server.allow_subscription})")
+# print(f'Subscribers: {server.subscriptions}')
+# peaking_system = PeakingSystem(occluded_cells=model.loader.world.cells.occluded_cells().copy())
+# model.peaking_system = peaking_system
+# model.peaking_system.max_peak_distance = 0.075
 
 while running:
     if not model.running: 
         time.sleep(model.time_step)
         if experiment_options.pcmouse and experiment_options.render: 
             input('Press [Enter] to start experiment...')
-            model.reset()
+            reset('')
         continue
     
     predator_step = cw.Step(agent_name="predator")
@@ -232,7 +243,6 @@ while running:
     # print(f'Is player peaking? {peaking_system.is_peaking}')
     predator_step.location = cw.Location(*model.predator.state.location)
     predator_step.rotation = model.predator.state.direction
-    # print(f'fs: {model.step_count / model.time}')
     if experiment_options.pcmouse and experiment_options.render: 
         sx,sy = model.view.screen.get_size()
         mx,my = get_mouse_position(sx,sy)

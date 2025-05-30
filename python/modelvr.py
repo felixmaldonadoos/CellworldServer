@@ -161,6 +161,7 @@ class ModelVR(EventDispatcher):
                 if other_agent_name != agent_name:
                     if Point.distance(agent.state.location, other_agent.state.location) <= self.max_line_of_sight_distance:
                         has_line_of_sight = agent_visibility_polygon.intersects(other_agent.body_polygon)
+                       
                         ### START NEW CHANGES FOR VR ###
                         # only need to check if peaking when agent is in line of sight, if 
                         # agent is peaking for more time that allowed (peaking_system.max_peaking_time), 
@@ -171,6 +172,7 @@ class ModelVR(EventDispatcher):
                             if self.peaking_system: 
                                 self.peaking_system.update(other_agent.state.location) 
                                 if self.peaking_system.is_peaking:
+                                    print('peaking')
                                     has_line_of_sight.fill_(False)
                         ### END NEW CHANGES FOR VR ###
                     else:

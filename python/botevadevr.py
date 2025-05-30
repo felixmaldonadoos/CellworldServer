@@ -47,10 +47,8 @@ class BotEvadeVR(ModelVR):
                  render: bool = False,
                  point_of_view: PointOfView = PointOfView.TOP,
                  agent_render_mode: Agent.RenderMode = Agent.RenderMode.SPRITE,
-                 prey_max_forward_speed: float = .5,
-                 prey_max_turning_speed: float = 20.0,
-                 predator_prey_forward_speed_ratio: float = .15,
-                 predator_prey_turning_speed_ratio: float = .175,
+                 predator_max_forward_speed:float = 0.3, 
+                 predator_max_turning_speed:float = 3.5,
                  max_line_of_sight_distance: float = 1.0
                  ):
         
@@ -59,6 +57,8 @@ class BotEvadeVR(ModelVR):
         self.puff_threshold = puff_threshold
         self.goal_location = goal_location
         self.goal_threshold = goal_threshold
+        self.predator_max_forward_speed = predator_max_forward_speed
+        self.predator_max_turning_speed = predator_max_turning_speed
         self.loader = CellWorldLoader(world_name=world_name)
         ModelVR.__init__(self,
                        world_name=world_name,
@@ -75,16 +75,14 @@ class BotEvadeVR(ModelVR):
 
         self.prey = MouseVR(start_state=AgentState(location=(.05, .5),
                                                  direction=0),
-                          navigation=self.loader.navigation,
-                          max_forward_speed=prey_max_forward_speed,
-                          max_turning_speed=prey_max_turning_speed)
+                          navigation=self.loader.navigation)
 
         if use_predator:
             self.predator = Robot(start_locations=self.loader.robot_start_locations,
                                   open_locations=self.loader.open_locations,
                                   navigation=self.loader.navigation,
-                                  max_forward_speed=self.prey.max_forward_speed * predator_prey_forward_speed_ratio,
-                                  max_turning_speed=self.prey.max_turning_speed * predator_prey_turning_speed_ratio)
+                                  max_forward_speed=self.predator_max_forward_speed, # set predator max fwd speed
+                                  max_turning_speed=self.predator_max_turning_speed) # set predator max trn speed 
 
             self.add_agent("predator", self.predator)
 
@@ -125,8 +123,9 @@ class BotEvadeVR(ModelVR):
         if self.use_predator and self.puff_cool_down <= 0:
             self.prey_data.predator_prey_distance = Point.distance(src=self.prey.state.location,
                                                                    dst=self.predator.state.location)
+
             self.prey_data.predator_visible = self.line_of_sight["prey"]["predator"]
-            if self.prey_data.predator_visible:
+            if self.line_of_sight["predator"]["prey"]: # before puff, check if predator can see prey
                 if self.prey_data.predator_prey_distance <= self.puff_threshold:
                     self.prey_data.puffed = True
                     self.prey_data.puff_count += 1
