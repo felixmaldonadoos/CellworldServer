@@ -1,12 +1,11 @@
 from tools.experiment_options import ExperimentArgParse
 from tools.vrcoordinateconverter import VRCoordinateConverter
+
 exp_args = ExperimentArgParse()
 experiment_options = exp_args.parse_args()
 
-global srvlog
-srvlog = Logger("Server")
 
-srvlog.success(msg="=== cellworld BotEvadeVR Server ===")
+
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import time
@@ -25,6 +24,9 @@ from tools.peaking import PeakingSystem
 from botevadevr import BotEvadeVR
 from tools.logger import Logger
 
+global srvlog
+srvlog = Logger("Server")
+srvlog.success(msg="=== cellworld BotEvadeVR Server ===")
 
 experiment_options.time_step = 1 / experiment_options.sampling_rate
 mtx = th.RLock()
@@ -42,7 +44,7 @@ srvlog.success(
 # print(f'Rendering: {experiment_options.render} | time step: {experiment_options.time_step:0.4f} ({experiment_options.sampling_rate} Hz)')
 # print(f"*** starting server on {experiment_options.ip}:{experiment_options.port} ***\n")
 
-world = 'clump02_05'
+world = '21_05'
 loader = game.CellWorldLoader(world_name=world) 
 global model
 
